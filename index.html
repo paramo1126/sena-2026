@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constructores MyM | Construcción Civil y Redes de Gas</title>
+  <meta name="description" content="Constructores MyM: soluciones integrales en construcción civil e infraestructura de redes de gas. Experiencia, seguridad y cumplimiento normativo.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      --color-navy: #0b1f3a;
+      --color-navy-light: #143a66;
+      --color-gold: #e8b923;
+      --color-gray: #6c757d;
+      --color-light: #f8f9fa;
+      --color-white: #ffffff;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      background-color: var(--color-white);
+    }
+
+    .bg-navy { background-color: var(--color-navy) !important; }
+    .bg-navy-light { background-color: var(--color-navy-light) !important; }
+    .bg-gold { background-color: var(--color-gold) !important; }
+    .text-gold { color: var(--color-gold) !important; }
+    .text-navy { color: var(--color-navy) !important; }
+    .text-gray { color: var(--color-gray) !important; }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-link {
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--color-gold) !important;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 600px;
+      background: linear-gradient(rgba(11, 31, 58, 0.85), rgba(11, 31, 58, 0.75)), url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      color: var(--color-white);
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-lead {
+      font-size: 1.25rem;
+      font-weight: 300;
+      max-width: 700px;
+      margin-bottom: 2rem;
+    }
+
+    .btn-gold {
+      background-color: var(--color-gold);
+      color: var(--color-navy);
+      font-weight: 700;
+      padding: 0.75rem 2rem;
+      border: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(232, 185, 35, 0.35);
+      color: var(--color-navy);
+    }
+
+    .btn-outline-navy {
+      color: var(--color-navy);
+      border: 2px solid var(--color-navy);
+      font-weight: 600;
+      padding: 0.6rem 1.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline-navy:hover {
+      background-color: var(--color-navy);
+      color: var(--color-white);
+    }
+
+    .section-title {
+      font-weight: 800;
+      color: var(--color-navy);
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background-color: var(--color-gold);
+      margin: 0.75rem auto 0;
+    }
+
+    .service-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      height: 100%;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .service-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background-color: rgba(232, 185, 35, 0.15);
+      color: var(--color-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .why-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .why-icon {
+      font-size: 2.5rem;
+      color: var(--color-gold);
+      margin-bottom: 1rem;
+    }
+
+    .contact-form {
+      background-color: var(--color-white);
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      padding: 2.5rem;
+    }
+
+    .form-control:focus {
+      border-color: var(--color-gold);
+      box-shadow: 0 0 0 0.25rem rgba(232, 185, 35, 0.25);
+    }
+
+    footer {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      color: var(--color-gold);
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-right: 0.5rem;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .social-icon:hover {
+      background-color: var(--color-gold);
+      color: var(--color-navy);
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.25rem;
+      }
+      .hero-lead {
+        font-size: 1.1rem;
+      }
+      .hero {
+        min-height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-navy fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-building-fill text-gold me-2"></i>Constructores <span class="text-gold">MyM</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="#inicio">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+          <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+        </ul>
+        <a href="#contacto" class="btn btn-gold btn-sm ms-lg-3 mt-2 mt-lg-0">Solicitar presupuesto</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="inicio" class="hero">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1 class="hero-title">Soluciones integrales en construcción e infraestructura</h1>
+          <p class="hero-lead">
+            En Constructores MyM combinamos experiencia, tecnología y compromiso para ejecutar proyectos de construcción civil y redes de gas con los más altos estándares de seguridad y calidad.
+          </p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="#contacto" class="btn btn-gold btn-lg">Cotiza tu proyecto</a>
+            <a href="#servicios" class="btn btn-outline-light btn-lg">Conoce nuestros servicios</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nosotros -->
+  <section id="nosotros" class="py-5">
+    <div class="container py-4">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <img src="https://images.unsplash.com/photo-1581578731117-104f2a41248b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Equipo de Constructores MyM en obra" class="img-fluid rounded-3 shadow">
+        </div>
+        <div class="col-lg-6">
+          <h2 class="section-title text-start">¿Quiénes somos?</h2>
+          <p class="text-gray mb-4">
+            Constructores MyM es una empresa especializada en construcción civil y redes de gas natural. Contamos con un equipo multidisciplinario de ingenieros, arquitectos y técnicos certificados que desarrollan proyectos desde el diseño hasta la entrega final.
+          </p>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                <span class="fw-semibold text-navy">+15 años de experiencia</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                <span class="fw-semibold text-navy">Cumplimiento normativo</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                <span class="fw-semibold text-navy">Personal certificado</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                <span class="fw-semibold text-navy">Proyectos a tiempo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servicios -->
+  <section id="servicios" class="py-5 bg-light">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="section-title">Nuestros servicios</h2>
+        <p class="text-gray mx-auto" style="max-width: 600px;">
+          Ofrecemos soluciones completas para el sector de la construcción y la infraestructura energética.
+        </p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card service-card p-4">
+            <div class="service-icon">
+              <i class="bi bi-building"></i>
+            </div>
+            <h3 class="h4 text-navy fw-bold mb-3">Construcción Civil</h3>
+            <p class="text-gray">
+              Ejecutamos obras residenciales, comerciales e industriales con procesos certificados, control de calidad en cada etapa y entrega puntual. Desde cimentación hasta acabados finales.
+            </p>
+            <ul class="list-unstyled mt-3 text-gray">
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Edificaciones residenciales y multifamiliares</li>
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Obras comerciales e industriales</li>
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Remodelaciones y ampliaciones</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card service-card p-4">
+            <div class="service-icon">
+              <i class="bi bi-fire"></i>
+            </div>
+            <h3 class="h4 text-navy fw-bold mb-3">Redes de Gas</h3>
+            <p class="text-gray">
+              Diseñamos, construimos y mantenemos redes de gas natural para proyectos urbanos e industriales, garantizando seguridad, eficiencia y cumplimiento de la normativa técnica.
+            </p>
+            <ul class="list-unstyled mt-3 text-gray">
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Instalación de redes internas y externas</li>
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Mantenimiento y rehabilitación</li>
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Pruebas de hermeticidad y certificaciones</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Por qué elegirnos -->
+  <section class="py-5">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="section-title">¿Por qué elegirnos?</h2>
+        <p class="text-gray mx-auto" style="max-width: 600px;">
+          Nuestro compromiso es convertir cada proyecto en una obra segura, eficiente y duradera.
+        </p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="why-card">
+            <div class="why-icon"><i class="bi bi-shield-check"></i></div>
+            <h4 class="text-navy fw-bold">Seguridad garantizada</h4>
+            <p class="text-gray">Protocolos estrictos de seguridad industrial y personal capacitado para minimizar riesgos en obra.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="why-card">
+            <div class="why-icon"><i class="bi bi-award"></i></div>
+            <h4 class="text-navy fw-bold">Experiencia comprobada</h4>
+            <p class="text-gray">Más de 15 años desarrollando proyectos de construcción e infraestructura de gas.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="why-card">
+            <div class="why-icon"><i class="bi bi-file-check"></i></div>
+            <h4 class="text-navy fw-bold">Cumplimiento normativo</h4>
+            <p class="text-gray">Trabajamos bajo los estándares técnicos y legales vigentes en cada fase del proyecto.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto" class="py-5 bg-navy text-white">
+    <div class="container py-4">
+      <div class="row g-5">
+        <div class="col-lg-5">
+          <h2 class="fw-bold mb-4">Solicita un presupuesto</h2>
+          <p class="mb-4" style="color: rgba(255,255,255,0.8);">
+            Cuéntanos sobre tu proyecto y un asesor especializado te contactará en menos de 24 horas con una propuesta a la medida.
+          </p>
+          <div class="d-flex align-items-start mb-3">
+            <i class="bi bi-telephone-fill text-gold fs-5 me-3 mt-1"></i>
+            <div>
+              <div class="fw-semibold">Teléfono</div>
+              <div style="color: rgba(255,255,255,0.8);">+57 123 456 7890</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-start mb-3">
+            <i class="bi bi-envelope-fill text-gold fs-5 me-3 mt-1"></i>
+            <div>
+              <div class="fw-semibold">Correo electrónico</div>
+              <div style="color: rgba(255,255,255,0.8);">contacto@constructoresmym.com</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-start">
+            <i class="bi bi-geo-alt-fill text-gold fs-5 me-3 mt-1"></i>
+            <div>
+              <div class="fw-semibold">Dirección</div>
+              <div style="color: rgba(255,255,255,0.8);">Calle 12 # 34-56, Bogotá, Colombia</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <form class="contact-form">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="nombre" class="form-label text-navy fw-semibold">Nombre</label>
+                <input type="text" class="form-control" id="nombre" placeholder="Tu nombre" required>
+              </div>
+              <div class="col-md-6">
+                <label for="email" class="form-label text-navy fw-semibold">Correo electrónico</label>
+                <input type="email" class="form-control" id="email" placeholder="tu@email.com" required>
+              </div>
+              <div class="col-md-6">
+                <label for="telefono" class="form-label text-navy fw-semibold">Teléfono</label>
+                <input type="tel" class="form-control" id="telefono" placeholder="+57 300 000 0000">
+              </div>
+              <div class="col-md-6">
+                <label for="servicio" class="form-label text-navy fw-semibold">Servicio de interés</label>
+                <select class="form-select" id="servicio">
+                  <option selected>Selecciona una opción</option>
+                  <option>Construcción Civil</option>
+                  <option>Redes de Gas</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label for="mensaje" class="form-label text-navy fw-semibold">Mensaje</label>
+                <textarea class="form-control" id="mensaje" rows="4" placeholder="Cuéntanos sobre tu proyecto..."></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-gold w-100">Enviar solicitud</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-navy-light pt-5 pb-4">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h4 class="fw-bold text-white mb-3">
+            <i class="bi bi-building-fill text-gold me-2"></i>Constructores MyM
+          </h4>
+          <p>
+            Soluciones integrales en construcción civil y redes de gas. Comprometidos con la calidad, la seguridad y la satisfacción de nuestros clientes.
+          </p>
+        </div>
+        <div class="col-lg-4">
+          <h5 class="fw-bold text-white mb-3">Enlaces rápidos</h5>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="#inicio">Inicio</a></li>
+            <li class="mb-2"><a href="#nosotros">Nosotros</a></li>
+            <li class="mb-2"><a href="#servicios">Proyectos/a></li>
+            <li class="mb-2"><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h5 class="fw-bold text-white mb-3">Síguenos</h5>
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <a href="#" class="social-icon" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        </div>
+      </div>
+      <hr class="border-secondary mt-4">
+      <div class="text-center small" style="color: rgba(255,255,255,0.6);">
+        © 2026 Constructores MyM. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
