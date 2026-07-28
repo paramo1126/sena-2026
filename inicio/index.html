@@ -16,7 +16,17 @@
       --color-light: #f8f9fa;
       --color-white: #ffffff;
     }
-
+        .top-banner {
+            background-color: var(--color-rojo);
+            color: #FFFFFF;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 4px 0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #333;
@@ -208,7 +218,23 @@
   </style>
 </head>
 <body>
-
+      <div class="top-banner">
+        <div class="marquee-track">
+            <!-- Se duplica el contenido para lograr el loop infinito sin saltos -->
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+            <span>servimos con el corazon</span>
+        </div>
+    </div>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-navy fixed-top">
     <div class="container">
