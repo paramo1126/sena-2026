@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constructores MyM | Construcción Civil y Redes de Gas</title>
+  <meta name="description" content="Constructores MyM: soluciones integrales en construcción civil e infraestructura de redes de gas. Experiencia, seguridad y cumplimiento normativo.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      --color-navy: #0b1f3a;
+      --color-navy-light: #143a66;
+      --color-gold: #e8b923;
+      --color-gray: #6c757d;
+      --color-light: #f8f9fa;
+      --color-white: #ffffff;
+    }
+        .top-banner {
+            background-color: var(--color-navy-light);
+            color: rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 4px 0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      background-color: var(--color-white);
+    }
+
+    .bg-navy { background-color: var(--color-navy) !important; }
+    .bg-navy-light { background-color: var(--color-navy-light) !important; }
+    .bg-gold { background-color: var(--color-gold) !important; }
+    .text-gold { color: var(--color-gold) !important; }
+    .text-navy { color: var(--color-navy) !important; }
+    .text-gray { color: var(--color-gray) !important; }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .main-navbar {
+      background-color: var(--color-white);
+      box-shadow: 0 4px 18px rgba(11, 31, 58, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+    }
+
+    .main-navbar .navbar-brand {
+      color: var(--color-navy);
+    }
+
+    .main-navbar .navbar-brand i {
+      color: var(--color-gold);
+    }
+
+    .nav-link {
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--color-gold) !important;
+    }
+
+    .main-navbar .nav-link {
+      color: var(--color-navy);
+      font-weight: 700;
+      padding: 1rem 0.9rem;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 0.4px;
+    }
+
+    .main-navbar .dropdown-menu {
+      border: 0;
+      border-radius: 0;
+      box-shadow: 0 12px 30px rgba(11, 31, 58, 0.16);
+      padding: 0.55rem 0;
+      margin-top: 0;
+      min-width: 220px;
+    }
+
+    .main-navbar .dropdown-item {
+      color: var(--color-navy);
+      font-weight: 600;
+      padding: 0.7rem 1rem;
+    }
+
+    .main-navbar .dropdown-item:hover,
+    .main-navbar .dropdown-item:focus {
+      background-color: rgba(232, 185, 35, 0.16);
+      color: var(--color-navy);
+    }
+
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu > .dropdown-menu {
+      top: 0;
+      left: 100%;
+      margin-left: 0.1rem;
+    }
+
+    .dropdown-submenu > .dropdown-toggle::after {
+      float: right;
+      margin-top: 0.55rem;
+      transform: rotate(-90deg);
+    }
+
+    @media (min-width: 992px) {
+      .main-navbar .dropdown:hover > .dropdown-menu,
+      .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+      }
+    }
+
+    @media (max-width: 991.98px) {
+      .main-navbar .nav-link {
+        padding: 0.75rem 0;
+      }
+
+      .dropdown-submenu > .dropdown-menu {
+        position: static;
+        margin-left: 1rem;
+        box-shadow: none;
+        border-left: 3px solid var(--color-gold);
+      }
+
+      .dropdown-submenu > .dropdown-toggle::after {
+        transform: none;
+      }
+    }
+
+    .hero {
+      position: relative;
+      min-height: 600px;
+      background: linear-gradient(rgba(11, 31, 58, 0.85), rgba(11, 31, 58, 0.75)), url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      color: var(--color-white);
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-lead {
+      font-size: 1.25rem;
+      font-weight: 300;
+      max-width: 700px;
+      margin-bottom: 2rem;
+    }
+
+    .btn-gold {
+      background-color: var(--color-gold);
+      color: var(--color-navy);
+      font-weight: 700;
+      padding: 0.75rem 2rem;
+      border: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(232, 185, 35, 0.35);
+      color: var(--color-navy);
+    }
+
+    .btn-outline-navy {
+      color: var(--color-navy);
+      border: 2px solid var(--color-navy);
+      font-weight: 600;
+      padding: 0.6rem 1.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline-navy:hover {
+      background-color: var(--color-navy);
+      color: var(--color-white);
+    }
+    /* Botón Flotante de WhatsApp */
+.btn-whatsapp {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  background-color: #25d366;
+  color: #ffffff !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 1050;
+  text-decoration: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  animation: pulse-whatsapp 2s infinite;
+}
+
+/* Efecto al pasar el mouse (Hover) */
+.btn-whatsapp:hover {
+  background-color: #20ba5a;
+  transform: scale(1.12);
+}
+
+/* Animación de onda expansiva */
+@keyframes pulse-whatsapp {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+    .section-title {
+      font-weight: 800;
+      color: var(--color-navy);
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background-color: var(--color-gold);
+      margin: 0.75rem auto 0;
+    }
+
+    .service-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      height: 100%;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .service-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background-color: rgba(232, 185, 35, 0.15);
+      color: var(--color-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .why-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .why-icon {
+      font-size: 2.5rem;
+      color: var(--color-gold);
+      margin-bottom: 1rem;
+    }
+
+    .contact-form {
+      background-color: var(--color-white);
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      padding: 2.5rem;
+    }
+
+    .form-control:focus {
+      border-color: var(--color-gold);
+      box-shadow: 0 0 0 0.25rem rgba(232, 185, 35, 0.25);
+    }
+
+    footer {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      color: var(--color-gold);
+    }
+    :root {
+  /* ...tus variables existentes... */
+  --color-rojo: #c0392b; /* o el rojo que prefieras */
+}
+
+.marquee-track {
+  display: inline-flex;
+  animation: marquee-scroll 20s linear infinite;
+}
+
+.marquee-track span {
+  padding-right: 3rem;
+  display: inline-block;
+}
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-right: 0.5rem;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .social-icon:hover {
+      background-color: var(--color-gold);
+      color: var(--color-navy);
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.25rem;
+      }
+      .hero-lead {
+        font-size: 1.1rem;
+      }
+      .hero {
+        min-height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+      <div class="top-banner">
+        <div class="marquee-track">
+            <!-- Se duplica el contenido para lograr el loop infinito sin saltos -->
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIEVENIDO A CONSTRUCCIONES M&M</span>
+        </div>
+    </div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg main-navbar">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="../inicio/index2.html">
+        <i class="bi bi-building-fill me-2"></i>
+        Constructores MyM
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="../inicio/index.html">Inicio</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="../inicio/proyecto.html" id="menuProyectos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Proyectos
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="menuProyectos">
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="../inicio/proyecto.html">Calles</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#servicios">Pavimentacion</a></li>
+                  <li><a class="dropdown-item" href="#servicios">Andenes</a></li>
+                </ul>
+              </li>
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="../inicio/proyecto.html">Tuberias</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#servicios">Redes de gas</a></li>
+                  <li><a class="dropdown-item" href="#servicios">Redes hidraulicas</a></li>
+                </ul>
+              </li>
+              <li><a class="dropdown-item" href="#servicios">Otras cosas</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="../inicio/nosotros.html">Nosotros</a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="../inicio/maquinaria.html">Maquinaria</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../inicio/contacto.html">Contacto</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+   <!-- Carrusel -->
+
+  </section>
+  <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="../imagenes/imagen1.png" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="../imagenes/imagen2.png" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="../imagenes/imagen3.png" class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+
+</div>
+
+</section>
+
+  <!-- Nosotros -->
+  <section id="nosotros" class="py-5">
+    <div class="container py-4">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <img src="https://images.unsplash.com/photo-1581578731117-104f2a41248b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Equipo de Constructores MyM en obra" class="img-fluid rounded-3 shadow">
+        </div>
+        <div class="col-lg-6">
+          <h2 class="section-title text-start">¿Quiénes somos?</h2>
+          <p class="text-gray mb-4">
+            Constructores MyM es una empresa especializada en construcción civil y redes de gas natural. Contamos con un equipo multidisciplinario de ingenieros, arquitectos y técnicos certificados que desarrollan proyectos desde el diseño hasta la entrega final.
+          </p>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                <span class="fw-semibold text-navy">+15 años de experiencia</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                <span class="fw-semibold text-navy">Cumplimiento normativo</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                <span class="fw-semibold text-navy">Personal certificado</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                <span class="fw-semibold text-navy">Proyectos a tiempo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servicios -->
+  <section id="servicios" class="py-5 bg-light">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="section-title">Nuestros servicios</h2>
+        <p class="text-gray mx-auto" style="max-width: 600px;">
+          Ofrecemos soluciones completas para el sector de la construcción y la infraestructura energética.
+        </p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card service-card p-4">
+            <div class="service-icon">
+              <i class="bi bi-building"></i>
+            </div>
+            <h3 class="h4 text-navy fw-bold mb-3">Construcción Civil</h3>
+            <p class="text-gray">
+              Ejecutamos obras residenciales, comerciales e industriales con procesos certificados, control de calidad en cada etapa y entrega puntual. Desde cimentación hasta acabados finales.
+            </p>
+            <ul class="list-unstyled mt-3 text-gray">
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Edificaciones residenciales y multifamiliares</li>
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Obras comerciales e industriales</li>
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Remodelaciones y ampliaciones</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card service-card p-4">
+            <div class="service-icon">
+              <i class="bi bi-fire"></i>
+            </div>
+            <h3 class="h4 text-navy fw-bold mb-3">Redes de Gas</h3>
+            <p class="text-gray">
+              Diseñamos, construimos y mantenemos redes de gas natural para proyectos urbanos e industriales, garantizando seguridad, eficiencia y cumplimiento de la normativa técnica.
+            </p>
+            <ul class="list-unstyled mt-3 text-gray">
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Instalación de redes internas y externas</li>
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Mantenimiento y rehabilitación</li>
+              <li><i class="bi bi-chevron-right text-gold me-2"></i>Pruebas de hermeticidad y certificaciones</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carrusel -->
+
+  </section>
+  <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="../imagenes/imagen1.png" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="../imagenes/imagen2.png" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="../imagenes/imagen3.png" class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+
+</div>
+
+  <!-- Por qué elegirnos -->
+  <section class="py-5">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="section-title">¿Por qué elegirnos?</h2>
+        <p class="text-gray mx-auto" style="max-width: 600px;">
+          Nuestro compromiso es convertir cada proyecto en una obra segura, eficiente y duradera.
+        </p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="why-card">
+            <div class="why-icon"><i class="bi bi-shield-check"></i></div>
+            <h4 class="text-navy fw-bold">Seguridad garantizada</h4>
+            <p class="text-gray">Protocolos estrictos de seguridad industrial y personal capacitado para minimizar riesgos en obra.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="why-card">
+            <div class="why-icon"><i class="bi bi-award"></i></div>
+            <h4 class="text-navy fw-bold">Experiencia comprobada</h4>
+            <p class="text-gray">Más de 15 años desarrollando proyectos de construcción e infraestructura de gas.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="why-card">
+            <div class="why-icon"><i class="bi bi-file-check"></i></div>
+            <h4 class="text-navy fw-bold">Cumplimiento normativo</h4>
+            <p class="text-gray">Trabajamos bajo los estándares técnicos y legales vigentes en cada fase del proyecto.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Footer -->
+  <footer id="contacto" class="bg-navy-light pt-5 pb-4">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h4 class="fw-bold text-white mb-3">
+            <i class="bi bi-building-fill text-gold me-2"></i>Constructores MyM
+          </h4>
+          <p>
+            Soluciones integrales en construcción civil y redes de gas. Comprometidos con la calidad, la seguridad y la satisfacción de nuestros clientes.
+          </p>
+        </div>
+        <div class="col-lg-4">
+          <h5 class="fw-bold text-white mb-3">Enlaces rápidos</h5>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="../inicio/index.html">Inicio</a></li>
+            <li class="mb-2"><a href="#nosotros">Nosotros</a></li>
+            <li class="mb-2"><a href="#servicios">Proyectos/a></li>
+            <li class="mb-2"><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h5 class="fw-bold text-white mb-3">Síguenos</h5>
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <a href="https://wa.me/3102916140" class="social-icon" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        </div>
+      </div>
+      <hr class="border-secondary mt-4">
+      <div class="text-center small" style="color: rgba(255,255,255,0.6);">
+        © 2026 Constructores MyM. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+<!-- Botón Flotante de WhatsApp con Animación -->
+<a href="https://wa.me/573026043945?text=Hola,%20como%20estas%20información%20sobre%20sus%20servicios" 
+   class="btn-whatsapp" 
+   target="_blank" 
+   rel="noopener noreferrer" 
+   aria-label="Contactar por WhatsApp">
+  <i class="bi bi-whatsapp"></i>
+</a>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.querySelectorAll('.dropdown-submenu > .dropdown-toggle').forEach(function (submenuToggle) {
+      submenuToggle.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        submenuToggle.nextElementSibling.classList.toggle('show');
+      });
+    });
+
+    document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+      dropdown.addEventListener('hide.bs.dropdown', function () {
+        dropdown.querySelectorAll('.dropdown-menu.show').forEach(function (submenu) {
+          submenu.classList.remove('show');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

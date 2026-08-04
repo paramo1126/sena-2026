@@ -17,8 +17,8 @@
       --color-white: #ffffff;
     }
         .top-banner {
-            background-color: var(--color-rojo);
-            color: #FFFFFF;
+            background-color: var(--color-navy-light);
+            color: rgba(255, 255, 255, 0.8);
             overflow: hidden;
             white-space: nowrap;
             padding: 4px 0;
@@ -191,6 +191,45 @@
       background-color: var(--color-navy);
       color: var(--color-white);
     }
+    /* Botón Flotante de WhatsApp */
+.btn-whatsapp {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  background-color: #25d366;
+  color: #ffffff !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 1050;
+  text-decoration: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  animation: pulse-whatsapp 2s infinite;
+}
+
+/* Efecto al pasar el mouse (Hover) */
+.btn-whatsapp:hover {
+  background-color: #20ba5a;
+  transform: scale(1.12);
+}
+
+/* Animación de onda expansiva */
+@keyframes pulse-whatsapp {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
 
     .section-title {
       font-weight: 800;
@@ -271,6 +310,25 @@
     footer a:hover {
       color: var(--color-gold);
     }
+    :root {
+  /* ...tus variables existentes... */
+  --color-rojo: #c0392b; /* o el rojo que prefieras */
+}
+
+.marquee-track {
+  display: inline-flex;
+  animation: marquee-scroll 20s linear infinite;
+}
+
+.marquee-track span {
+  padding-right: 3rem;
+  display: inline-block;
+}
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
     .social-icon {
       width: 40px;
@@ -307,24 +365,24 @@
       <div class="top-banner">
         <div class="marquee-track">
             <!-- Se duplica el contenido para lograr el loop infinito sin saltos -->
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
-            <span>servimos con el corazon</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
+            <span>BIEVENIDO A CONSTRUCCIONES M&M</span>
         </div>
     </div>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg main-navbar">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="#inicio">
+      <a class="navbar-brand d-flex align-items-center" href="../inicio/index2.html">
         <i class="bi bi-building-fill me-2"></i>
         Constructores MyM
       </a>
@@ -334,22 +392,22 @@
       <div class="collapse navbar-collapse" id="menuPrincipal">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#inicio">Inicio</a>
+            <a class="nav-link active" aria-current="page" href="../inicio/index.html">Inicio</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#servicios" id="menuProyectos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="../inicio/proyecto.html" id="menuProyectos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Proyectos
             </a>
             <ul class="dropdown-menu" aria-labelledby="menuProyectos">
               <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="#servicios">Calles</a>
+                <a class="dropdown-item dropdown-toggle" href="../inicio/proyecto.html">Calles</a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#servicios">Pavimentacion</a></li>
                   <li><a class="dropdown-item" href="#servicios">Andenes</a></li>
                 </ul>
               </li>
               <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="#servicios">Tuberias</a>
+                <a class="dropdown-item dropdown-toggle" href="../inicio/proyecto.html">Tuberias</a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#servicios">Redes de gas</a></li>
                   <li><a class="dropdown-item" href="#servicios">Redes hidraulicas</a></li>
@@ -359,10 +417,13 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#nosotros">Nosotros</a>
+            <a class="nav-link" href="../inicio/nosotros.html">Nosotros</a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="../inicio/maquinaria.html">Maquinaria</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#contacto">Contacto (ubicacion)</a>
+            <a class="nav-link" href="../inicio/contacto.html">Contacto</a>
           </li>
         </ul>
       </div>
@@ -574,7 +635,7 @@
         <div class="col-lg-4">
           <h5 class="fw-bold text-white mb-3">Enlaces rápidos</h5>
           <ul class="list-unstyled">
-            <li class="mb-2"><a href="#inicio">Inicio</a></li>
+            <li class="mb-2"><a href="../inicio/index.html">Inicio</a></li>
             <li class="mb-2"><a href="#nosotros">Nosotros</a></li>
             <li class="mb-2"><a href="#servicios">Proyectos/a></li>
             <li class="mb-2"><a href="#contacto">Contacto</a></li>
@@ -585,7 +646,7 @@
           <a href="#" class="social-icon" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
           <a href="#" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
           <a href="#" class="social-icon" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-          <a href="#" class="social-icon" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+          <a href="https://wa.me/3102916140" class="social-icon" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
         </div>
       </div>
       <hr class="border-secondary mt-4">
@@ -594,7 +655,14 @@
       </div>
     </div>
   </footer>
-
+<!-- Botón Flotante de WhatsApp con Animación -->
+<a href="https://wa.me/573026043945?text=Hola,%20como%20estas%20información%20sobre%20sus%20servicios" 
+   class="btn-whatsapp" 
+   target="_blank" 
+   rel="noopener noreferrer" 
+   aria-label="Contactar por WhatsApp">
+  <i class="bi bi-whatsapp"></i>
+</a>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.querySelectorAll('.dropdown-submenu > .dropdown-toggle').forEach(function (submenuToggle) {
