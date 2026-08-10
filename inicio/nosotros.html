@@ -3,195 +3,176 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Constructores MyM | Construcción Civil y Redes de Gas</title>
-  <meta name="description" content="Constructores MyM: soluciones integrales en construcción civil e infraestructura de redes de gas. Experiencia, seguridad y cumplimiento normativo.">
+  <title>Constructores M&M | Construcción Civil y Redes de Gas</title>
+  <meta name="description" content="Constructores M&M: soluciones integrales en construcción civil e infraestructura de redes de gas. Experiencia, seguridad y cumplimiento normativo.">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <style>
-    :root {
-      --color-navy: #0b1f3a;
-      --color-navy-light: #143a66;
-      --color-gold: #e8b923;
-      --color-gray: #6c757d;
-      --color-light: #f8f9fa;
-      --color-white: #ffffff;
-    }
-        .top-banner {
-            background-color: var(--color-navy-light);
-            color: rgba(255, 255, 255, 0.8);
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 4px 0;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-    
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #333;
-      background-color: var(--color-white);
-    }
+ <style>
+  :root {
+  --color-navy: #0b1f3a;
+  --color-navy-light: #143a66;
+  --color-gold: #e8b923;
+  --color-gray: #6c757d;
+  --color-light: #f8f9fa;
+  --color-white: #ffffff;
+  --color-rojo: #c0392b;
+}
 
-    .bg-navy { background-color: var(--color-navy) !important; }
-    .bg-navy-light { background-color: var(--color-navy-light) !important; }
-    .bg-gold { background-color: var(--color-gold) !important; }
-    .text-gold { color: var(--color-gold) !important; }
-    .text-navy { color: var(--color-navy) !important; }
-    .text-gray { color: var(--color-gray) !important; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: var(--color-white);
+}
 
-    .navbar-brand {
-      font-weight: 700;
-      font-size: 1.5rem;
-      letter-spacing: -0.5px;
-    }
+.top-banner {
+  background-color: var(--color-navy-light);
+  color: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 4px 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
 
-    .main-navbar {
-      background-color: var(--color-white);
-      box-shadow: 0 4px 18px rgba(11, 31, 58, 0.08);
-      position: sticky;
-      top: 0;
-      z-index: 1030;
-    }
+.marquee-track {
+  display: inline-flex;
+  animation: marquee-scroll 20s linear infinite;
+}
 
-    .main-navbar .navbar-brand {
-      color: var(--color-navy);
-    }
+.marquee-track span {
+  padding-right: 3rem;
+  display: inline-block;
+}
 
-    .main-navbar .navbar-brand i {
-      color: var(--color-gold);
-    }
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
-    .nav-link {
-      font-weight: 500;
-      transition: color 0.2s ease;
-    }
+.bg-navy { background-color: var(--color-navy) !important; }
+.bg-navy-light { background-color: var(--color-navy-light) !important; }
+.bg-gold { background-color: var(--color-gold) !important; }
+.text-gold { color: var(--color-gold) !important; }
+.text-navy { color: var(--color-navy) !important; }
+.text-gray { color: var(--color-gray) !important; }
 
-    .nav-link:hover, .nav-link.active {
-      color: var(--color-gold) !important;
-    }
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.5px;
+}
 
-    .main-navbar .nav-link {
-      color: var(--color-navy);
-      font-weight: 700;
-      padding: 1rem 0.9rem;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-      letter-spacing: 0.4px;
-    }
+.main-navbar {
+  background-color: var(--color-white);
+  box-shadow: 0 4px 18px rgba(11, 31, 58, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
 
-    .main-navbar .dropdown-menu {
-      border: 0;
-      border-radius: 0;
-      box-shadow: 0 12px 30px rgba(11, 31, 58, 0.16);
-      padding: 0.55rem 0;
-      margin-top: 0;
-      min-width: 220px;
-    }
+.main-navbar .navbar-brand {
+  color: var(--color-navy);
+}
 
-    .main-navbar .dropdown-item {
-      color: var(--color-navy);
-      font-weight: 600;
-      padding: 0.7rem 1rem;
-    }
+.main-navbar .navbar-brand i {
+  color: var(--color-gold);
+}
 
-    .main-navbar .dropdown-item:hover,
-    .main-navbar .dropdown-item:focus {
-      background-color: rgba(232, 185, 35, 0.16);
-      color: var(--color-navy);
-    }
+.nav-link {
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
 
-    .dropdown-submenu {
-      position: relative;
-    }
+.nav-link:hover, .nav-link.active {
+  color: var(--color-gold) !important;
+}
 
-    .dropdown-submenu > .dropdown-menu {
-      top: 0;
-      left: 100%;
-      margin-left: 0.1rem;
-    }
+.main-navbar .nav-link {
+  color: var(--color-navy);
+  font-weight: 700;
+  padding: 1rem 0.9rem;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.4px;
+}
 
-    .dropdown-submenu > .dropdown-toggle::after {
-      float: right;
-      margin-top: 0.55rem;
-      transform: rotate(-90deg);
-    }
+.main-navbar .dropdown-menu {
+  border: 0;
+  border-radius: 0;
+  box-shadow: 0 12px 30px rgba(11, 31, 58, 0.16);
+  padding: 0.55rem 0;
+  margin-top: 0;
+  min-width: 220px;
+}
 
-    @media (min-width: 992px) {
-      .main-navbar .dropdown:hover > .dropdown-menu,
-      .dropdown-submenu:hover > .dropdown-menu {
-        display: block;
-      }
-    }
+.main-navbar .dropdown-item {
+  color: var(--color-navy);
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+}
 
-    @media (max-width: 991.98px) {
-      .main-navbar .nav-link {
-        padding: 0.75rem 0;
-      }
+.main-navbar .dropdown-item:hover,
+.main-navbar .dropdown-item:focus {
+  background-color: rgba(232, 185, 35, 0.16);
+  color: var(--color-navy);
+}
 
-      .dropdown-submenu > .dropdown-menu {
-        position: static;
-        margin-left: 1rem;
-        box-shadow: none;
-        border-left: 3px solid var(--color-gold);
-      }
+.dropdown-submenu {
+  position: relative;
+}
 
-      .dropdown-submenu > .dropdown-toggle::after {
-        transform: none;
-      }
-    }
+.dropdown-submenu > .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: 0.1rem;
+}
 
-    .hero {
-      position: relative;
-      min-height: 600px;
-      background: linear-gradient(rgba(11, 31, 58, 0.85), rgba(11, 31, 58, 0.75)), url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-      display: flex;
-      align-items: center;
-      color: var(--color-white);
-    }
+.dropdown-submenu > .dropdown-toggle::after {
+  float: right;
+  margin-top: 0.55rem;
+  transform: rotate(-90deg);
+}
 
-    .hero-title {
-      font-size: 3rem;
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
-    }
+@media (min-width: 992px) {
+  .main-navbar .dropdown:hover > .dropdown-menu,
+  .dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+  }
+}
 
-    .hero-lead {
-      font-size: 1.25rem;
-      font-weight: 300;
-      max-width: 700px;
-      margin-bottom: 2rem;
-    }
+@media (max-width: 991.98px) {
+  .main-navbar .nav-link {
+    padding: 0.75rem 0;
+  }
 
-    .btn-gold {
-      background-color: var(--color-gold);
-      color: var(--color-navy);
-      font-weight: 700;
-      padding: 0.75rem 2rem;
-      border: none;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+  .dropdown-submenu > .dropdown-menu {
+    position: static;
+    margin-left: 1rem;
+    box-shadow: none;
+    border-left: 3px solid var(--color-gold);
+  }
 
-    .btn-gold:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(232, 185, 35, 0.35);
-      color: var(--color-navy);
-    }
+  .dropdown-submenu > .dropdown-toggle::after {
+    transform: none;
+  }
+}
 
-    .btn-outline-navy {
-      color: var(--color-navy);
-      border: 2px solid var(--color-navy);
-      font-weight: 600;
-      padding: 0.6rem 1.5rem;
-      transition: all 0.2s ease;
-    }
+.btn-gold {
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+  font-weight: 700;
+  padding: 0.75rem 2rem;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-    .btn-outline-navy:hover {
-      background-color: var(--color-navy);
-      color: var(--color-white);
-    }
-    /* Botón Flotante de WhatsApp */
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(232, 185, 35, 0.35);
+  color: var(--color-navy);
+}
+
 .btn-whatsapp {
   position: fixed;
   bottom: 25px;
@@ -212,179 +193,428 @@
   animation: pulse-whatsapp 2s infinite;
 }
 
-/* Efecto al pasar el mouse (Hover) */
 .btn-whatsapp:hover {
   background-color: #20ba5a;
   transform: scale(1.12);
 }
 
-/* Animación de onda expansiva */
 @keyframes pulse-whatsapp {
-  0% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 18px rgba(37, 211, 102, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-  }
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+  70% { box-shadow: 0 0 0 18px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
 
-    .section-title {
-      font-weight: 800;
-      color: var(--color-navy);
-      position: relative;
-      display: inline-block;
-      margin-bottom: 1rem;
-    }
-
-    .section-title::after {
-      content: '';
-      display: block;
-      width: 60px;
-      height: 4px;
-      background-color: var(--color-gold);
-      margin: 0.75rem auto 0;
-    }
-
-    .service-card {
-      border: none;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      height: 100%;
-    }
-
-    .service-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    .service-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background-color: rgba(232, 185, 35, 0.15);
-      color: var(--color-gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .why-card {
-      text-align: center;
-      padding: 2rem 1.5rem;
-    }
-
-    .why-icon {
-      font-size: 2.5rem;
-      color: var(--color-gold);
-      margin-bottom: 1rem;
-    }
-
-    .contact-form {
-      background-color: var(--color-white);
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-      padding: 2.5rem;
-    }
-
-    .form-control:focus {
-      border-color: var(--color-gold);
-      box-shadow: 0 0 0 0.25rem rgba(232, 185, 35, 0.25);
-    }
-
-    footer {
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    footer a {
-      color: rgba(255, 255, 255, 0.8);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    footer a:hover {
-      color: var(--color-gold);
-    }
-    :root {
-  /* ...tus variables existentes... */
-  --color-rojo: #c0392b; /* o el rojo que prefieras */
+.section-title {
+  font-weight: 800;
+  color: var(--color-navy);
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
 }
 
-.marquee-track {
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: var(--color-gold);
+  margin: 0.75rem auto 0;
+}
+
+.service-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(232, 185, 35, 0.15);
+  color: var(--color-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.why-card {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: var(--color-white);
+  border-radius: 0.75rem;
+  transition: transform 0.25s ease;
+}
+
+.why-card:hover {
+  transform: translateY(-5px);
+}
+
+.why-icon {
+  font-size: 2.5rem;
+  color: var(--color-gold);
+  margin-bottom: 1rem;
+}
+
+footer {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+footer a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+footer a:hover {
+  color: var(--color-gold);
+}
+
+footer h5, footer h4 {
+  position: relative;
+  padding-bottom: 0.6rem;
+}
+
+footer h5::after, footer h4::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 3px;
+  background-color: var(--color-gold);
+}
+
+footer p, footer li {
+  font-size: 0.95rem;
+}
+
+.footer-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.footer-contact-item i {
+  color: var(--color-gold);
+  font-size: 1.05rem;
+  margin-top: 0.2rem;
+}
+
+footer ul.list-unstyled li a {
   display: inline-flex;
-  animation: marquee-scroll 20s linear infinite;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.marquee-track span {
-  padding-right: 3rem;
+footer ul.list-unstyled li a::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--color-gold);
   display: inline-block;
 }
 
-@keyframes marquee-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+.social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-    .social-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.1);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      margin-right: 0.5rem;
-      transition: background-color 0.2s ease, color 0.2s ease;
+.social-icon:hover {
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+}
+ 
+    /* ===== ACABADO PROFESIONAL CONSTRUCTORES M&M ===== */
+    :root {
+      --color-ink: #162033;
+      --color-muted: #596477;
+      --color-surface: #ffffff;
+      --color-surface-soft: #f5f7fb;
+      --color-border: rgba(11, 31, 58, 0.1);
+      --shadow-soft: 0 18px 45px rgba(11, 31, 58, 0.1);
+      --shadow-strong: 0 24px 65px rgba(11, 31, 58, 0.18);
     }
 
-    .social-icon:hover {
-      background-color: var(--color-gold);
-      color: var(--color-navy);
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      color: var(--color-ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(232, 185, 35, 0.08), transparent 28%),
+        linear-gradient(180deg, #ffffff 0%, #f7f9fc 48%, #ffffff 100%);
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    section {
+      scroll-margin-top: 96px;
+    }
+
+    .top-banner {
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 0.55rem 0;
+      background: linear-gradient(90deg, #07182f 0%, #123761 52%, #07182f 100%);
+      color: #ffffff;
+      border-bottom: 1px solid rgba(232, 185, 35, 0.28);
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .top-banner::before,
+    .top-banner::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 86px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .top-banner::before {
+      left: 0;
+      background: linear-gradient(90deg, #07182f 0%, rgba(7, 24, 47, 0) 100%);
+    }
+
+    .top-banner::after {
+      right: 0;
+      background: linear-gradient(270deg, #07182f 0%, rgba(7, 24, 47, 0) 100%);
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee-scroll 24s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee-group {
+      display: flex;
+      align-items: center;
+      flex: 0 0 auto;
+      min-width: 100vw;
+    }
+
+    .marquee-track span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0 2.1rem;
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+    }
+
+    .marquee-track span::after {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--color-gold);
+      box-shadow: 0 0 14px rgba(232, 185, 35, 0.75);
+    }
+
+    @keyframes marquee-scroll {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-50%, 0, 0); }
+    }
+
+    .main-navbar {
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: 0 14px 34px rgba(11, 31, 58, 0.08);
+    }
+
+    .navbar-brand {
+      letter-spacing: 0;
+    }
+
+    .navbar-brand i {
+      filter: drop-shadow(0 5px 10px rgba(232, 185, 35, 0.28));
+    }
+
+    .main-navbar .nav-link {
+      position: relative;
+      letter-spacing: 0;
+    }
+
+    .main-navbar .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0.9rem;
+      right: 0.9rem;
+      bottom: 0.55rem;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--color-gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.22s ease;
+    }
+
+    .main-navbar .nav-link:hover::after,
+    .main-navbar .nav-link.active::after {
+      transform: scaleX(1);
+    }
+
+    .hero,
+    .project-hero,
+    .contact-hero {
+      isolation: isolate;
+      box-shadow: inset 0 -90px 120px rgba(5, 14, 29, 0.14);
+    }
+
+    .hero-title,
+    .project-hero h1,
+    .contact-hero h1 {
+      color: #ffffff;
+      letter-spacing: 0;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.36);
+    }
+
+    .hero-lead,
+    .project-hero p,
+    .contact-hero p {
+      color: rgba(255, 255, 255, 0.94) !important;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.36);
+    }
+
+    .btn,
+    .anchor-link,
+    .social-icon {
+      border-radius: 0.65rem;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #f4cf45, var(--color-gold));
+      box-shadow: 0 12px 24px rgba(232, 185, 35, 0.28);
+    }
+
+    .btn-gold:hover {
+      box-shadow: 0 18px 34px rgba(232, 185, 35, 0.38);
+    }
+
+    .service-card,
+    .why-card,
+    .project-card,
+    .contact-info-card,
+    .contact-form,
+    .anchor-panel,
+    .map-frame {
+      border: 1px solid var(--color-border) !important;
+      border-radius: 0.85rem !important;
+      box-shadow: var(--shadow-soft) !important;
+    }
+
+    .service-card,
+    .why-card,
+    .project-card,
+    .contact-info-card {
+      overflow: hidden;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+
+    .service-card:hover,
+    .why-card:hover,
+    .project-card:hover,
+    .contact-info-card:hover {
+      transform: translateY(-7px);
+      box-shadow: var(--shadow-strong) !important;
+    }
+
+    .service-icon,
+    .why-icon,
+    .contact-icon {
+      filter: drop-shadow(0 10px 18px rgba(232, 185, 35, 0.22));
+    }
+
+    img.rounded-3,
+    .carousel-item img,
+    .project-card img {
+      box-shadow: 0 18px 45px rgba(11, 31, 58, 0.16);
+    }
+
+    footer.bg-navy-light {
+      background: linear-gradient(135deg, #07182f 0%, #0f2d50 56%, #061223 100%) !important;
+      color: rgba(255, 255, 255, 0.9);
+      border-top: 1px solid rgba(232, 185, 35, 0.2);
+    }
+
+    footer a,
+    footer p,
+    footer li,
+    .footer-contact-item span {
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    footer h4,
+    footer h5,
+    footer .text-white {
+      color: #ffffff !important;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.24);
+    }
+
+    .btn-whatsapp {
+      box-shadow: 0 14px 30px rgba(37, 211, 102, 0.32);
     }
 
     @media (max-width: 768px) {
-      .hero-title {
-        font-size: 2.25rem;
+      .top-banner::before,
+      .top-banner::after {
+        width: 42px;
       }
-      .hero-lead {
-        font-size: 1.1rem;
+
+      .marquee-track span {
+        padding: 0 1.2rem;
+        font-size: 0.72rem;
       }
-      .hero {
-        min-height: 500px;
+
+      .main-navbar .nav-link::after {
+        left: 0;
+        right: auto;
+        bottom: 0.35rem;
+        width: 44px;
       }
     }
+    /* ===== FIN ACABADO PROFESIONAL ===== */
   </style>
 </head>
 <body>
-      <div class="top-banner">
-        <div class="marquee-track">
-            <!-- Se duplica el contenido para lograr el loop infinito sin saltos -->
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIENVENIDO A CONSTRUCCIONES M&M</span>
-            <span>BIEVENIDO A CONSTRUCCIONES M&M</span>
-        </div>
+  <div class="top-banner" aria-label="Mensaje de bienvenida">
+    <div class="marquee-track">
+      <div class="marquee-group">
+        <span>BIENVENIDO A CONSTRUCTORES M&M</span>
+        <span>CALIDAD EN CONSTRUCCION CIVIL</span>
+        <span>MAQUINARIA</span>
+        <span>SEGURIDAD Y CUMPLIMIENTO</span>
+      </div>
+      <div class="marquee-group" aria-hidden="true">
+        <span>BIENVENIDO A CONSTRUCTORES M&M</span>
+        <span>CALIDAD EN CONSTRUCCION CIVIL</span>
+        <span>MAQUINARIA</span>
+        <span>SEGURIDAD Y CUMPLIMIENTO</span>
+      </div>
     </div>
+  </div>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg main-navbar">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" href="../inicio/index2.html">
         <i class="bi bi-building-fill me-2"></i>
-        Constructores MyM
+        Constructores M&M
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
         <span class="navbar-toggler-icon"></span>
@@ -395,29 +625,17 @@
             <a class="nav-link" aria-current="page" href="../inicio/index.html">Inicio</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="../inicio/proyecto.html" id="menuProyectos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="../inicio/proyecto.html" id="menuProyectos" role="button" aria-expanded="false">
               Proyectos
             </a>
             <ul class="dropdown-menu" aria-labelledby="menuProyectos">
-              <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="../inicio/proyecto.html">Calles</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#servicios">Pavimentacion</a></li>
-                  <li><a class="dropdown-item" href="#servicios">Andenes</a></li>
-                </ul>
-              </li>
-              <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="../inicio/proyecto.html">Tuberias</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#servicios">Redes de gas</a></li>
-                  <li><a class="dropdown-item" href="#servicios">Redes hidraulicas</a></li>
-                </ul>
-              </li>
-              <li><a class="dropdown-item" href="#servicios">Otras cosas</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.html#calles">Calles pavimentadas</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.html#tuberias">Tuberias</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.html#evidencias">Evidencias</a></li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="../inicio/nosotros.html">Nosotros</a>
+            <a class="nav-link active" href="../inicio/nosotros.html">Nosotros</a>
           </li>
             <li class="nav-item">
             <a class="nav-link" href="../inicio/maquinaria.html">Maquinaria</a>
@@ -429,19 +647,19 @@
       </div>
     </div>
   </nav>
-   <!-- Carrusel -->
+     <!-- Carrusel -->
 
   </section>
   <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="../imagenes/imagen1.png" class="d-block w-100" alt="...">
+      <img src="../imagenes/imagen1.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 1">
     </div>
     <div class="carousel-item">
-      <img src="../imagenes/imagen2.png" class="d-block w-100" alt="...">
+      <img src="../imagenes/imagen2.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 2">
     </div>
     <div class="carousel-item">
-      <img src="../imagenes/imagen3.png" class="d-block w-100" alt="...">
+      <img src="../imagenes/imagen3.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 3">
     </div>
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
@@ -453,192 +671,197 @@
     <span class="visually-hidden">Next</span>
   </button>
 
-</div>
-
-</section>
 
   <!-- Nosotros -->
-  <section id="nosotros" class="py-5">
-    <div class="container py-4">
-      <div class="row align-items-center">
-        <div class="col-lg-6 mb-4 mb-lg-0">
-          <img src="https://images.unsplash.com/photo-1581578731117-104f2a41248b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Equipo de Constructores MyM en obra" class="img-fluid rounded-3 shadow">
-        </div>
-        <div class="col-lg-6">
-          <h2 class="section-title text-start">¿Quiénes somos?</h2>
-          <p class="text-gray mb-4">
-            Constructores MyM es una empresa especializada en construcción civil y redes de gas natural. Contamos con un equipo multidisciplinario de ingenieros, arquitectos y técnicos certificados que desarrollan proyectos desde el diseño hasta la entrega final.
-          </p>
-          <div class="row g-3">
-            <div class="col-6">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
-                <span class="fw-semibold text-navy">+15 años de experiencia</span>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
-                <span class="fw-semibold text-navy">Cumplimiento normativo</span>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
-                <span class="fw-semibold text-navy">Personal certificado</span>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
-                <span class="fw-semibold text-navy">Proyectos a tiempo</span>
-              </div>
-            </div>
-          </div>
-        </div>
+  <!-- ======================================================= -->
+<!-- SECCIÓN NOSOTROS COMPLETA Y MEJORADA                    -->
+<!-- ======================================================= -->
+<section id="nosotros" class="py-5">
+  <div class="container py-4">
+    
+    <!-- 1. Quiénes Somos -->
+    <div class="row align-items-center mb-5">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <img src="../imagenes/imagen4.png" alt="Equipo de Constructores M&M en obra" class="img-fluid rounded-3 shadow">
       </div>
-    </div>
-  </section>
-
-  <!-- Servicios -->
-  <section id="servicios" class="py-5 bg-light">
-    <div class="container py-4">
-      <div class="text-center mb-5">
-        <h2 class="section-title">Nuestros servicios</h2>
-        <p class="text-gray mx-auto" style="max-width: 600px;">
-          Ofrecemos soluciones completas para el sector de la construcción y la infraestructura energética.
+      <div class="col-lg-6">
+        <h2 class="section-title text-start">¿Quiénes somos?</h2>
+        <p class="text-gray mb-4">
+          Constructores M&M es una empresa líder especializada en construcción civil y soluciones integrales de infraestructura para redes de gas natural. Contamos con un equipo multidisciplinario de ingenieros, arquitectos y técnicos altamente certificados que desarrollan proyectos ejecutando estándares rigurosos desde el diseño preliminar hasta la entrega final.
         </p>
-      </div>
-      <div class="row g-4">
-        <div class="col-md-6">
-          <div class="card service-card p-4">
-            <div class="service-icon">
-              <i class="bi bi-building"></i>
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+              <span class="fw-semibold text-navy">+15 años de experiencia</span>
             </div>
-            <h3 class="h4 text-navy fw-bold mb-3">Construcción Civil</h3>
-            <p class="text-gray">
-              Ejecutamos obras residenciales, comerciales e industriales con procesos certificados, control de calidad en cada etapa y entrega puntual. Desde cimentación hasta acabados finales.
-            </p>
-            <ul class="list-unstyled mt-3 text-gray">
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Edificaciones residenciales y multifamiliares</li>
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Obras comerciales e industriales</li>
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Remodelaciones y ampliaciones</li>
-            </ul>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card service-card p-4">
-            <div class="service-icon">
-              <i class="bi bi-fire"></i>
+          <div class="col-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+              <span class="fw-semibold text-navy">Cumplimiento normativo</span>
             </div>
-            <h3 class="h4 text-navy fw-bold mb-3">Redes de Gas</h3>
-            <p class="text-gray">
-              Diseñamos, construimos y mantenemos redes de gas natural para proyectos urbanos e industriales, garantizando seguridad, eficiencia y cumplimiento de la normativa técnica.
-            </p>
-            <ul class="list-unstyled mt-3 text-gray">
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Instalación de redes internas y externas</li>
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Mantenimiento y rehabilitación</li>
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Pruebas de hermeticidad y certificaciones</li>
-            </ul>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+              <span class="fw-semibold text-navy">Personal certificado</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+              <span class="fw-semibold text-navy">Proyectos a tiempo</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Carrusel -->
+    <!-- 2. Misión y Visión -->
+    <div class="row g-4 my-5">
+      <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm p-4 border-start border-4 border-gold bg-light">
+          <div class="d-flex align-items-center mb-3">
+            <div class="service-icon me-3 mb-0" style="width: 50px; height: 50px; font-size: 1.5rem;">
+              <i class="bi bi-compass-fill"></i>
+            </div>
+            <h3 class="h4 fw-bold text-navy mb-0">Misión</h3>
+          </div>
+          <p class="text-gray mb-0">
+            Proveer soluciones integrales e innovadoras en construcción civil e infraestructura de redes de gas, garantizando altos estándares de calidad, seguridad industrial y cumplimiento normativo. Buscamos impactar positivamente en las comunidades a través de obras sostenibles, eficientes y confiables.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm p-4 border-start border-4 border-navy bg-light">
+          <div class="d-flex align-items-center mb-3">
+            <div class="service-icon me-3 mb-0" style="width: 50px; height: 50px; font-size: 1.5rem; background-color: rgba(11, 31, 58, 0.1); color: var(--color-navy);">
+              <i class="bi bi-eye-fill"></i>
+            </div>
+            <h3 class="h4 fw-bold text-navy mb-0">Visión</h3>
+          </div>
+          <p class="text-gray mb-0">
+            Ser reconocidos para el 2030 como la empresa referente a nivel regional y nacional en el desarrollo de proyectos de ingeniería civil y redes de infraestructura energética, destacándonos por la excelencia operativa, el desarrollo de nuestro talento humano y el compromiso medioambiental.
+          </p>
+        </div>
+      </div>
+    </div>
 
-  </section>
-  <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="../imagenes/imagen1.png" class="d-block w-100" alt="...">
+    <!-- 3. Valores Corporativos -->
+    <div class="my-5 text-center">
+      <h2 class="section-title">Nuestros Valores</h2>
+      <p class="text-gray mb-4">Los principios que guían la ejecución de cada uno de nuestros proyectos.</p>
+      
+      <div class="row g-4 mt-2">
+        <div class="col-6 col-md-3">
+          <div class="why-card card h-100 border-0 shadow-sm">
+            <i class="bi bi-shield-check why-icon"></i>
+            <h5 class="fw-bold text-navy">Seguridad</h5>
+            <p class="small text-gray mb-0">Protegemos la vida de nuestros colaboradores y de la comunidad en cada obra.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="why-card card h-100 border-0 shadow-sm">
+            <i class="bi bi-award-fill why-icon"></i>
+            <h5 class="fw-bold text-navy">Calidad</h5>
+            <p class="small text-gray mb-0">Uso de materiales certificados y procesos con estándares técnicos rigurosos.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="why-card card h-100 border-0 shadow-sm">
+            <i class="bi bi-clock-history why-icon"></i>
+            <h5 class="fw-bold text-navy">Cumplimiento</h5>
+            <p class="small text-gray mb-0">Entregamos los proyectos respetando cronogramas y presupuestos pactados.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="why-card card h-100 border-0 shadow-sm">
+            <i class="bi bi-tree-fill why-icon"></i>
+            <h5 class="fw-bold text-navy">Sostenibilidad</h5>
+            <p class="small text-gray mb-0">Respeto por el medio ambiente y mitigación del impacto ambiental.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="carousel-item">
-      <img src="../imagenes/imagen2.png" class="d-block w-100" alt="...">
+
+    <!-- 4. Banner de Logros / Métricas -->
+    <div class="bg-navy rounded-3 text-white p-4 p-md-5 mt-5 shadow">
+      <div class="row text-center g-4">
+        <div class="col-6 col-md-3">
+          <div class="display-6 fw-bold text-gold">+150</div>
+          <div class="small text-uppercase">Proyectos Ejecutados</div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="display-6 fw-bold text-gold">+50 Km</div>
+          <div class="small text-uppercase">Redes de Gas Instaladas</div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="display-6 fw-bold text-gold">100%</div>
+          <div class="small text-uppercase">Certificación Normativa</div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="display-6 fw-bold text-gold">+15</div>
+          <div class="small text-uppercase">Años de Trayectoria</div>
+        </div>
+      </div>
     </div>
-    <div class="carousel-item">
-      <img src="../imagenes/imagen3.png" class="d-block w-100" alt="...">
-    </div>
+
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
+</section>
 
 </div>
-
-  <!-- Por qué elegirnos -->
-  <section class="py-5">
-    <div class="container py-4">
-      <div class="text-center mb-5">
-        <h2 class="section-title">¿Por qué elegirnos?</h2>
-        <p class="text-gray mx-auto" style="max-width: 600px;">
-          Nuestro compromiso es convertir cada proyecto en una obra segura, eficiente y duradera.
-        </p>
-      </div>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="why-card">
-            <div class="why-icon"><i class="bi bi-shield-check"></i></div>
-            <h4 class="text-navy fw-bold">Seguridad garantizada</h4>
-            <p class="text-gray">Protocolos estrictos de seguridad industrial y personal capacitado para minimizar riesgos en obra.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="why-card">
-            <div class="why-icon"><i class="bi bi-award"></i></div>
-            <h4 class="text-navy fw-bold">Experiencia comprobada</h4>
-            <p class="text-gray">Más de 15 años desarrollando proyectos de construcción e infraestructura de gas.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="why-card">
-            <div class="why-icon"><i class="bi bi-file-check"></i></div>
-            <h4 class="text-navy fw-bold">Cumplimiento normativo</h4>
-            <p class="text-gray">Trabajamos bajo los estándares técnicos y legales vigentes en cada fase del proyecto.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
   <!-- Footer -->
   <footer id="contacto" class="bg-navy-light pt-5 pb-4">
     <div class="container">
       <div class="row g-4">
         <div class="col-lg-4">
           <h4 class="fw-bold text-white mb-3">
-            <i class="bi bi-building-fill text-gold me-2"></i>Constructores MyM
+            <i class="bi bi-building-fill text-gold me-2"></i>Constructores M&M
           </h4>
           <p>
             Soluciones integrales en construcción civil y redes de gas. Comprometidos con la calidad, la seguridad y la satisfacción de nuestros clientes.
           </p>
+          <div class="d-flex mt-3">
+            <a href="#" class="social-icon" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-icon" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+            <a href="https://wa.me/3102916140" class="social-icon" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+          </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 col-sm-6">
           <h5 class="fw-bold text-white mb-3">Enlaces rápidos</h5>
           <ul class="list-unstyled">
             <li class="mb-2"><a href="../inicio/index.html">Inicio</a></li>
             <li class="mb-2"><a href="#nosotros">Nosotros</a></li>
-            <li class="mb-2"><a href="#servicios">Proyectos/a></li>
+            <li class="mb-2"><a href="#servicios">Proyectos</a></li>
             <li class="mb-2"><a href="#contacto">Contacto</a></li>
           </ul>
         </div>
-        <div class="col-lg-4">
-          <h5 class="fw-bold text-white mb-3">Síguenos</h5>
-          <a href="#" class="social-icon" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="social-icon" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-          <a href="https://wa.me/3102916140" class="social-icon" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        <div class="col-lg-4 col-sm-6">
+          <h5 class="fw-bold text-white mb-3">Contacto</h5>
+          <div class="footer-contact-item">
+            <i class="bi bi-geo-alt-fill"></i>
+            <span>Neiva, Huila, Colombia</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="bi bi-telephone-fill"></i>
+            <span>+57 310 291 6140</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="bi bi-envelope-fill"></i>
+            <span>contacto@constructoresmym.com</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="bi bi-clock-fill"></i>
+            <span>Lunes a viernes: 8:00 a.m. - 5:00 p.m.</span>
+          </div>
         </div>
       </div>
       <hr class="border-secondary mt-4">
-      <div class="text-center small" style="color: rgba(255,255,255,0.6);">
-        © 2026 Constructores MyM. Todos los derechos reservados.
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center small" style="color: rgba(255,255,255,0.6);">
+        <span>© 2026 Constructores M&M. Todos los derechos reservados.</span>
+        <span class="mt-2 mt-md-0">Construcción civil y redes de gas natural</span>
       </div>
     </div>
   </footer>
