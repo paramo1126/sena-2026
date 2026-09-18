@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesion | Constructores M&M</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../estilos/style.css">
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <section class="brand-panel" aria-label="Constructores M&M">
+      <div class="brand-mark"><i class="bi bi-building-fill me-2"></i>Constructores M&M</div>
+      <h1>Control seguro de operaciones</h1>
+      <p>Acceso privado para administrar contenido, imagenes publicadas y el estado general de maquinaria.</p>
+    </section>
+
+    <section class="form-panel">
+      <div class="login-card">
+        <h2>Iniciar sesion</h2>
+        <p class="subtitle">Ingresa con tu usuario administrativo.</p>
+
+        <form action="../administrador/login.php" method="POST">
+          <div class="mb-3">
+            <label for="usuario" class="form-label">Usuario</label>
+            <input type="text" class="form-control" id="usuario" name="usuario" placeholder="admin" required>
+          </div>
+
+          <div class="mb-4">
+            <label for="password" class="form-label">Contrasena</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
+          </div>
+
+          <div class="d-grid mb-4">
+            <button type="submit" class="btn btn-login">Entrar al panel</button>
+          </div>
+        </form>
+
+        <a class="back-link" href="../inicio/index.html"><i class="bi bi-arrow-left me-2"></i>Volver al sitio</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
