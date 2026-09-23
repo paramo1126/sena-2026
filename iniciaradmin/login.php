@@ -1,3 +1,30 @@
+<?php
+// 1. Iniciamos sesión y llamamos a la conexión al principio de todo
+session_start();
+include '../config/conexion.php';
+
+$error = ""; // Variable para guardar mensajes si las credenciales fallan
+
+// 2. Verificamos si el usuario le dio clic al botón de enviar (método POST)
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $usuario_ingresado = $_POST['usuario'];
+    $password_ingresada = $_POST['password'];
+
+    // 3. Consultamos en la tabla usuarios de phpMyAdmin
+    $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario_ingresado' AND clave = '$password_ingresada'";
+    $resultado = $conexion->query($sql);
+
+    if ($resultado->num_rows > 0) {
+        // Si coincide, creamos la sesión y redirigimos al panel
+        $_SESSION['admin_activo'] = $usuario_ingresado;
+        header("Location: admin.php");
+        exit();
+    } else {
+        // Si falla, guardamos un mensaje de error para mostrarlo en la pantalla
+        $error = "Usuario o contraseña incorrectos.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,7 +51,15 @@
         <h2>Iniciar sesion</h2>
         <p class="subtitle">Ingresa con tu usuario administrativo.</p>
 
-        <form action="../administrador/login.php" method="POST">
+        <!-- 4. Si hubo error al iniciar sesión, mostramos una alerta bonita de Bootstrap -->
+        <?php if (!empty($error)): ?>
+          <div class="alert alert-danger py-2 mb-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i><?php echo $error; ?>
+          </div>
+        <?php endif; ?>
+
+        <!-- El formulario apunta a este mismo archivo (dejando el action vacío o con el nombre del archivo) -->
+        <form action="" method="POST">
           <div class="mb-3">
             <label for="usuario" class="form-label">Usuario</label>
             <input type="text" class="form-control" id="usuario" name="usuario" placeholder="admin" required>
