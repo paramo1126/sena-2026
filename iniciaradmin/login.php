@@ -1,5 +1,5 @@
 <?php
-// 1. Iniciamos sesión y llamamos a la conexión al principio de todo
+// 1. Iniciamos sesión y llamamos a la conexión (subiendo un nivel para buscar la carpeta config)
 session_start();
 include '../config/conexion.php';
 
@@ -10,17 +10,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $usuario_ingresado = $_POST['usuario'];
     $password_ingresada = $_POST['password'];
 
-    // 3. Consultamos en la tabla usuarios de phpMyAdmin
-    $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario_ingresado' AND clave = '$password_ingresada'";
-    $resultado = $conexion->query($sql);
+    // 3. Consulta preparada para buscar el usuario de forma segura
+    $sql = "SELECT * FROM usuarios WHERE usuario = ?";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("s", $usuario_ingresado);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
 
+    // 4. Verificamos si encontramos al usuario en la base de datos
     if ($resultado->num_rows > 0) {
-        // Si coincide, creamos la sesión y redirigimos al panel
-        $_SESSION['admin_activo'] = $usuario_ingresado;
-        header("Location: admin.php");
-        exit();
+        $row = $resultado->fetch_assoc();
+        
+        // Comparamos la contraseña ingresada con la de la base de datos
+        if ($password_ingresada === $row['clave']) {
+            // Si coincide, creamos la sesión y redirigimos al indexx.php dentro de la carpeta administrador
+            $_SESSION['admin_activo'] = $usuario_ingresado;
+            header("Location: ../administrador/indexx.php");
+            exit();
+        } else {
+            // Contraseña incorrecta
+            $error = "Usuario o contraseña incorrectos.";
+        }
     } else {
-        // Si falla, guardamos un mensaje de error para mostrarlo en la pantalla
+        // Usuario no existe
         $error = "Usuario o contraseña incorrectos.";
     }
 }
@@ -51,14 +63,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <h2>Iniciar sesion</h2>
         <p class="subtitle">Ingresa con tu usuario administrativo.</p>
 
-        <!-- 4. Si hubo error al iniciar sesión, mostramos una alerta bonita de Bootstrap -->
+        <!-- Si hubo error al iniciar sesión, mostramos la alerta -->
         <?php if (!empty($error)): ?>
           <div class="alert alert-danger py-2 mb-3" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i><?php echo $error; ?>
           </div>
         <?php endif; ?>
 
-        <!-- El formulario apunta a este mismo archivo (dejando el action vacío o con el nombre del archivo) -->
+        <!-- El action vacío envía los datos correctamente al mismo login.php -->
         <form action="" method="POST">
           <div class="mb-3">
             <label for="usuario" class="form-label">Usuario</label>
@@ -66,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           </div>
 
           <div class="mb-4">
-            <label for="password" class="form-label">Contrasena</label>
+            <label for="password" class="form-label">Contraseña</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
           </div>
 
