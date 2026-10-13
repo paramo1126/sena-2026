@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Constructores M&M | Construcción Civil y Redes de Gas</title>
   <meta name="description" content="Constructores M&M: soluciones integrales en construcción civil e infraestructura de redes de gas. Experiencia, seguridad y cumplimiento normativo.">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../estilos/iniciostyle.css">
 </head>
@@ -29,7 +29,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg main-navbar">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="../inicio/index.html">
+      <a class="navbar-brand d-flex align-items-center" href="../inicio/index.php">
         <i class="bi bi-building-fill me-2"></i>
         Constructores M&M
       </a>
@@ -39,10 +39,10 @@
       <div class="collapse navbar-collapse" id="menuPrincipal">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="../inicio/index.html">Inicio</a>
+            <a class="nav-link active" aria-current="page" href="../inicio/index.php">Inicio</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="../inicio/proyecto.html" id="menuProyectos" role="button" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="../inicio/proyecto.php" id="menuProyectos" role="button" aria-expanded="false">
               Proyectos
             </a>
             <ul class="dropdown-menu" aria-labelledby="menuProyectos">
@@ -52,13 +52,13 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../inicio/nosotros.html">Nosotros</a>
+            <a class="nav-link" href="../inicio/nosotros.php">Nosotros</a>
           </li>
             <li class="nav-item">
-            <a class="nav-link" href="../inicio/maquinaria.html">Maquinaria</a>
+            <a class="nav-link" href="../inicio/maquinaria.php">Maquinaria</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../inicio/contacto.html">Contacto</a>
+            <a class="nav-link" href="../inicio/contacto.php">Contacto</a>
           </li>
         </ul>
         <a class="login-nav-btn" href="../iniciaradmin/login.php">Iniciar sesión</a>
@@ -329,7 +329,7 @@
       document.documentElement.style.setProperty('--marquee-delay', '-' + elapsed + 'ms');
     })();
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.querySelectorAll('.dropdown-submenu > .dropdown-toggle').forEach(function (submenuToggle) {
       submenuToggle.addEventListener('click', function (event) {

@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($password_ingresada === $row['clave']) {
             // Si coincide, creamos la sesión y redirigimos al indexx.php dentro de la carpeta administrador
             $_SESSION['admin_activo'] = $usuario_ingresado;
-            header("Location: ../administrador/indexx.php");
+            header("Location: ../administrador/desboard.php");
             exit();
         } else {
             // Contraseña incorrecta
@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           </div>
         </form>
 
-        <a class="back-link" href="../inicio/index.html"><i class="bi bi-arrow-left me-2"></i>Volver al sitio</a>
+        <a class="back-link" href="../inicio/index.php"><i class="bi bi-arrow-left me-2"></i>Volver al sitio</a>
       </div>
     </section>
   </main>

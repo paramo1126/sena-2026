@@ -39,26 +39,26 @@
       <div class="collapse navbar-collapse" id="menuPrincipal">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="../inicio/index.html">Inicio</a>
+            <a class="nav-link" aria-current="page" href="../inicio/index.php">Inicio</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="../inicio/proyecto.html" id="menuProyectos" role="button" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="../inicio/proyecto.php" id="menuProyectos" role="button" aria-expanded="false">
               Proyectos
             </a>
             <ul class="dropdown-menu" aria-labelledby="menuProyectos">
-              <li><a class="dropdown-item" href="../inicio/proyecto.html#calles">Calles pavimentadas</a></li>
-              <li><a class="dropdown-item" href="../inicio/proyecto.html#tuberias">Tuberias</a></li>
-              <li><a class="dropdown-item" href="../inicio/proyecto.html#evidencias">Evidencias</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#calles">Calles pavimentadas</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#tuberias">Tuberias</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#evidencias">Evidencias</a></li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="../inicio/nosotros.html">Nosotros</a>
+            <a class="nav-link active" href="../inicio/nosotros.php">Nosotros</a>
           </li>
             <li class="nav-item">
-            <a class="nav-link" href="../inicio/maquinaria.html">Maquinaria</a>
+            <a class="nav-link" href="../inicio/maquinaria.php">Maquinaria</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../inicio/contacto.html">Contacto</a>
+            <a class="nav-link" href="../inicio/contacto.php">Contacto</a>
           </li>
         </ul>
         <a class="login-nav-btn" href="../iniciaradmin/login.php">Iniciar sesión</a>
