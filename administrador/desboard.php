@@ -15,18 +15,42 @@ session_start();
 // Conexión a la base de datos MySQL
 require_once __DIR__ . '/../config/conexion.php';
 
-// Validación de sesión del administrador
-if (!isset($_SESSION['usuario']) && !isset($_SESSION['admin'])) {
-    $_SESSION['usuario'] = 'Administrador';
-    $_SESSION['email']   = 'admin@construccionesmym.com';
-    $_SESSION['rol']     = 'Super Administrador';
-}
-
-$admin_nombre = htmlspecialchars($_SESSION['usuario'] ?? 'Administrador');
-$admin_email  = htmlspecialchars($_SESSION['email'] ?? 'admin@construccionesmym.com');
-$admin_rol    = htmlspecialchars($_SESSION['rol'] ?? 'Administrador');
-
 $conexion_ok = isset($conexion) && !$conexion->connect_error;
+
+// 1. SEGURIDAD Y CONTROL DE SESIÓN DINÁMICO
+$sesion_usuario_actual = $_SESSION['admin_activo'] ?? $_SESSION['usuario'] ?? $_SESSION['admin'] ?? '';
+$admin_nombre = !empty($sesion_usuario_actual) ? $sesion_usuario_actual : 'Administrador';
+$admin_email  = 'admin@construccionesmym.com';
+$admin_rol    = $_SESSION['rol'] ?? 'Administrador';
+
+// Consulta preparada a la tabla usuarios (columna usuario) usando la sesión activa
+if ($conexion_ok) {
+    if (!empty($sesion_usuario_actual)) {
+        $stmt_user = $conexion->prepare("SELECT usuario FROM usuarios WHERE usuario = ? LIMIT 1");
+        if ($stmt_user) {
+            $stmt_user->bind_param("s", $sesion_usuario_actual);
+            $stmt_user->execute();
+            $res_user = $stmt_user->get_result();
+            if ($res_user && $row_u = $res_user->fetch_assoc()) {
+                if (!empty($row_u['usuario'])) {
+                    $admin_email  = $row_u['usuario'];
+                    $admin_nombre = $row_u['usuario'];
+                }
+            }
+            $stmt_user->close();
+        }
+    } else {
+        // En caso de ingreso directo o prueba, consultar el usuario administrador activo en la BD
+        $res_u = @$conexion->query("SELECT usuario FROM usuarios LIMIT 1");
+        if ($res_u && $row_u = $res_u->fetch_assoc()) {
+            if (!empty($row_u['usuario'])) {
+                $admin_email  = $row_u['usuario'];
+                $admin_nombre = $row_u['usuario'];
+                $_SESSION['admin_activo'] = $row_u['usuario'];
+            }
+        }
+    }
+}
 
 // Control para vaciar registros y dejar el Dashboard en 0 cuando el usuario lo solicite
 if (isset($_GET['accion']) && $_GET['accion'] === 'vaciar_todo') {
@@ -126,7 +150,7 @@ if ($conexion_ok) {
             FROM historial_movimientos hm
             INNER JOIN maquinarias m ON hm.id_maquina = m.id_maquina
             ORDER BY hm.id_movimiento DESC
-            LIMIT 10
+            LIMIT 5
         ";
 
         $res_actividad = $conexion->query($sql_actividad);
@@ -1071,8 +1095,8 @@ if ($conexion_ok) {
         <!-- Menú Desplegable -->
         <div class="user-dropdown" id="userDropdown">
           <div class="dropdown-header-custom">
-            <div class="dropdown-user-name"><?php echo $admin_nombre; ?></div>
-            <div class="dropdown-user-email"><?php echo $admin_email; ?></div>
+            <div class="dropdown-user-name"><?php echo htmlspecialchars($admin_nombre); ?></div>
+            <div class="dropdown-user-email"><?php echo htmlspecialchars($admin_email); ?></div>
             <div class="badge bg-warning text-dark mt-2" style="font-size: 0.7rem; font-weight: 700;"><?php echo $admin_rol; ?></div>
           </div>
           

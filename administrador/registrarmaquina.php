@@ -15,20 +15,49 @@ session_start();
 // Conexión a la base de datos MySQL
 require_once __DIR__ . '/../config/conexion.php';
 
-// Validación de sesión del administrador
-if (!isset($_SESSION['usuario']) && !isset($_SESSION['admin'])) {
-    $_SESSION['usuario'] = 'Administrador';
-    $_SESSION['email']   = 'admin@construccionesmym.com';
-    $_SESSION['rol']     = 'Super Administrador';
-}
-
-$admin_nombre = htmlspecialchars($_SESSION['usuario'] ?? 'Administrador');
-$admin_email  = htmlspecialchars($_SESSION['email'] ?? 'admin@construccionesmym.com');
-$admin_rol    = htmlspecialchars($_SESSION['rol'] ?? 'Administrador');
-
 $conexion_ok = isset($conexion) && !$conexion->connect_error;
 $mensaje_alerta = '';
 $tipo_alerta = '';
+
+// Asegurar que la columna caracteristicas sea VARCHAR(100) en la base de datos
+if ($conexion_ok) {
+    @$conexion->query("ALTER TABLE maquinarias MODIFY COLUMN caracteristicas VARCHAR(100)");
+}
+
+// 1. SEGURIDAD Y CONTROL DE SESIÓN DINÁMICO
+$sesion_usuario_actual = $_SESSION['admin_activo'] ?? $_SESSION['usuario'] ?? $_SESSION['admin'] ?? '';
+$admin_nombre = !empty($sesion_usuario_actual) ? $sesion_usuario_actual : 'Administrador';
+$admin_email  = 'admin@construccionesmym.com';
+$admin_rol    = $_SESSION['rol'] ?? 'Administrador';
+
+// Consulta preparada a la tabla usuarios (columna usuario) usando la sesión activa
+if ($conexion_ok) {
+    if (!empty($sesion_usuario_actual)) {
+        $stmt_user = $conexion->prepare("SELECT usuario FROM usuarios WHERE usuario = ? LIMIT 1");
+        if ($stmt_user) {
+            $stmt_user->bind_param("s", $sesion_usuario_actual);
+            $stmt_user->execute();
+            $res_user = $stmt_user->get_result();
+            if ($res_user && $row_u = $res_user->fetch_assoc()) {
+                if (!empty($row_u['usuario'])) {
+                    $admin_email  = $row_u['usuario'];
+                    $admin_nombre = $row_u['usuario'];
+                }
+            }
+            $stmt_user->close();
+        }
+    } else {
+        // En caso de ingreso directo o prueba, consultar el usuario administrador activo en la BD
+        $res_u = @$conexion->query("SELECT usuario FROM usuarios LIMIT 1");
+        if ($res_u && $row_u = $res_u->fetch_assoc()) {
+            if (!empty($row_u['usuario'])) {
+                $admin_email  = $row_u['usuario'];
+                $admin_nombre = $row_u['usuario'];
+                $_SESSION['admin_activo'] = $row_u['usuario'];
+            }
+        }
+    }
+}
 
 // Control para vaciar registros y dejar la tabla en 0 cuando el usuario lo solicite
 if (isset($_GET['accion']) && $_GET['accion'] === 'vaciar_todo') {
@@ -45,6 +74,34 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'vaciar_todo') {
     exit;
 }
 
+// Control para eliminar un transporte vía GET con confirmación
+if (isset($_GET['accion']) && $_GET['accion'] === 'eliminar' && isset($_GET['id'])) {
+    $id_del = (int)$_GET['id'];
+    if ($id_del > 0 && $conexion_ok) {
+        try {
+            $conexion->begin_transaction();
+            $stmtH = $conexion->prepare("DELETE FROM historial_movimientos WHERE id_maquina = ?");
+            if ($stmtH) {
+                $stmtH->bind_param("i", $id_del);
+                $stmtH->execute();
+                $stmtH->close();
+            }
+            $stmtM = $conexion->prepare("DELETE FROM maquinarias WHERE id_maquina = ?");
+            if ($stmtM) {
+                $stmtM->bind_param("i", $id_del);
+                $stmtM->execute();
+                $stmtM->close();
+            }
+            $conexion->commit();
+            $_SESSION['mensaje_alerta_maquinas'] = "¡Registro eliminado permanentemente del sistema!";
+            header("Location: registrarmaquina.php");
+            exit;
+        } catch (Exception $e) {
+            if ($conexion_ok) $conexion->rollback();
+        }
+    }
+}
+
 // ==============================================================================
 // 2. PROCESAMIENTO: REGISTRAR NUEVO TRANSPORTE O ACTUALIZAR
 // ==============================================================================
@@ -56,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $placa_raw       = trim($_POST['placa'] ?? '');
         $placa           = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $placa_raw)); // Solo 6 caracteres alfanuméricos en mayúsculas
         $modelo          = trim($_POST['modelo'] ?? '');
-        $caracteristicas = trim($_POST['caracteristicas'] ?? '');
+        $caracteristicas = mb_substr(trim($_POST['caracteristicas'] ?? ''), 0, 100);
         $ubicacion       = trim($_POST['ubicacion_actual'] ?? '');
         $estado          = trim($_POST['estado'] ?? 'Disponible');
         $fecha_entrada   = !empty($_POST['fecha_entrada']) ? $_POST['fecha_entrada'] : null;
@@ -129,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     // CASO 2: ACTUALIZAR EXISTENTE (Solo campos operativos)
     if ($_POST['action'] === 'actualizar_maquinaria') {
         $id_maquina      = (int)($_POST['id_maquina'] ?? 0);
-        $caracteristicas = trim($_POST['caracteristicas'] ?? '');
+        $caracteristicas = mb_substr(trim($_POST['caracteristicas'] ?? ''), 0, 100);
         $ubicacion       = trim($_POST['ubicacion_actual'] ?? '');
         $estado          = trim($_POST['estado'] ?? 'Disponible');
         $fecha_entrada   = !empty($_POST['fecha_entrada']) ? $_POST['fecha_entrada'] : null;
@@ -177,6 +234,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 }
             } catch (Exception $e) {
                 $mensaje_alerta = "Excepción al actualizar: " . $e->getMessage();
+                $tipo_alerta = "danger";
+            }
+        }
+    }
+
+    // CASO 3: ELIMINAR REGISTRO PERMANENTEMENTE
+    if ($_POST['action'] === 'eliminar_maquinaria') {
+        $id_maquina = (int)($_POST['id_maquina'] ?? 0);
+        if ($id_maquina > 0 && $conexion_ok) {
+            try {
+                // Obtener datos del transporte antes de eliminar para el mensaje de alerta
+                $stmtCheck = $conexion->prepare("SELECT categoria, placa, modelo FROM maquinarias WHERE id_maquina = ?");
+                $stmtCheck->bind_param("i", $id_maquina);
+                $stmtCheck->execute();
+                $resData = $stmtCheck->get_result();
+                $maqData = $resData->fetch_assoc();
+                $stmtCheck->close();
+
+                if ($maqData) {
+                    $conexion->begin_transaction();
+
+                    // 1. Eliminar movimientos asociados en historial_movimientos
+                    $stmtHistDel = $conexion->prepare("DELETE FROM historial_movimientos WHERE id_maquina = ?");
+                    if ($stmtHistDel) {
+                        $stmtHistDel->bind_param("i", $id_maquina);
+                        $stmtHistDel->execute();
+                        $stmtHistDel->close();
+                    }
+
+                    // 2. Eliminar de la tabla maquinarias
+                    $stmtDel = $conexion->prepare("DELETE FROM maquinarias WHERE id_maquina = ?");
+                    if ($stmtDel) {
+                        $stmtDel->bind_param("i", $id_maquina);
+                        $stmtDel->execute();
+                        $stmtDel->close();
+                    }
+
+                    $conexion->commit();
+                    $mensaje_alerta = "¡" . htmlspecialchars($maqData['categoria']) . " con placa " . htmlspecialchars($maqData['placa']) . " (" . htmlspecialchars($maqData['modelo']) . ") ha sido eliminado permanentemente del sistema!";
+                    $tipo_alerta = "success";
+                } else {
+                    $mensaje_alerta = "El registro a eliminar no fue encontrado.";
+                    $tipo_alerta = "warning";
+                }
+            } catch (Exception $e) {
+                if ($conexion_ok) {
+                    $conexion->rollback();
+                }
+                $mensaje_alerta = "Error al eliminar el registro: " . $e->getMessage();
                 $tipo_alerta = "danger";
             }
         }
@@ -890,6 +996,25 @@ if ($conexion_ok) {
       background-color: #f8fafc;
     }
 
+    /* Truncado de características largas y responsividad */
+    .campo-caract {
+      max-width: 180px;
+    }
+
+    .caract-truncate {
+      display: inline-block;
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .table-responsive {
+      border-radius: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+
     /* Fondo tenue al desplegar el menú */
     .sidebar-backdrop {
       display: none;
@@ -909,6 +1034,15 @@ if ($conexion_ok) {
       opacity: 1;
     }
 
+    @media (max-width: 992px) {
+      .campo-caract {
+        max-width: 140px;
+      }
+      .caract-truncate {
+        max-width: 130px;
+      }
+    }
+
     @media (max-width: 768px) {
       .admin-topbar {
         padding: 0 16px 0 80px;
@@ -917,7 +1051,14 @@ if ($conexion_ok) {
         padding: 4px;
       }
       .admin-content {
-        padding: 24px 16px 50px 16px;
+        padding: 20px 12px 50px 12px;
+      }
+      .panel-clean {
+        padding: 16px 14px;
+      }
+      .table-custom th, .table-custom td {
+        padding: 10px 12px;
+        font-size: 0.82rem;
       }
     }
   </style>
@@ -1016,8 +1157,8 @@ if ($conexion_ok) {
         <!-- Menú Desplegable -->
         <div class="user-dropdown" id="userDropdown">
           <div class="dropdown-header-custom">
-            <div class="dropdown-user-name"><?php echo $admin_nombre; ?></div>
-            <div class="dropdown-user-email"><?php echo $admin_email; ?></div>
+            <div class="dropdown-user-name"><?php echo htmlspecialchars($admin_nombre); ?></div>
+            <div class="dropdown-user-email"><?php echo htmlspecialchars($admin_email); ?></div>
             <div class="badge bg-warning text-dark mt-2" style="font-size: 0.7rem; font-weight: 700;"><?php echo $admin_rol; ?></div>
           </div>
           
@@ -1128,10 +1269,18 @@ if ($conexion_ok) {
                     $entrada_txt = (!empty($maq['fecha_entrada']) ? date('d/m/Y', strtotime($maq['fecha_entrada'])) : '') . (!empty($maq['hora_entrada']) ? ' ' . substr($maq['hora_entrada'], 0, 5) : '');
                     $salida_txt  = (!empty($maq['fecha_salida']) ? date('d/m/Y', strtotime($maq['fecha_salida'])) : '') . (!empty($maq['hora_salida']) ? ' ' . substr($maq['hora_salida'], 0, 5) : '');
                   ?>
+                  <?php 
+                    $caract_raw = !empty($maq['caracteristicas']) ? $maq['caracteristicas'] : 'Sin descripción';
+                    $caract_truncada = (mb_strlen($caract_raw) > 28) ? mb_substr($caract_raw, 0, 28) . '...' : $caract_raw;
+                  ?>
                   <tr class="fila-maquinaria" data-estado="<?php echo htmlspecialchars($maq['estado']); ?>">
                     <td class="fw-bold text-dark campo-placa"><span class="badge bg-dark px-2 py-1"><?php echo htmlspecialchars($maq['placa']); ?></span></td>
                     <td><strong class="text-primary campo-modelo"><?php echo htmlspecialchars($maq['modelo']); ?></strong></td>
-                    <td class="text-secondary small campo-caract"><?php echo htmlspecialchars(!empty($maq['caracteristicas']) ? $maq['caracteristicas'] : 'Sin descripción'); ?></td>
+                    <td class="text-secondary small campo-caract">
+                      <span class="caract-truncate" title="Clic en Actualizar para ver el texto completo">
+                        <?php echo htmlspecialchars($caract_truncada); ?>
+                      </span>
+                    </td>
                     <td class="text-muted campo-lugar">
                       <i class="bi bi-geo-alt me-1 text-danger"></i><?php echo htmlspecialchars(!empty($maq['ubicacion_actual']) ? $maq['ubicacion_actual'] : 'Sin ubicación'); ?>
                     </td>
@@ -1147,22 +1296,32 @@ if ($conexion_ok) {
                         <div><i class="bi bi-box-arrow-right text-warning me-1"></i><?php echo $salida_txt; ?></div>
                       <?php endif; ?>
                     </td>
-                    <td style="text-align: right; padding-right: 20px;">
-                      <button type="button" 
-                              class="btn btn-sm btn-outline-primary fw-semibold btn-abrir-actualizar"
-                              data-id="<?php echo $maq['id_maquina']; ?>"
-                              data-categoria="<?php echo htmlspecialchars($maq['categoria']); ?>"
-                              data-placa="<?php echo htmlspecialchars($maq['placa']); ?>"
-                              data-modelo="<?php echo htmlspecialchars($maq['modelo']); ?>"
-                              data-caracteristicas="<?php echo htmlspecialchars($maq['caracteristicas'] ?? ''); ?>"
-                              data-ubicacion="<?php echo htmlspecialchars($maq['ubicacion_actual'] ?? ''); ?>"
-                              data-estado="<?php echo htmlspecialchars($maq['estado'] ?? 'Disponible'); ?>"
-                              data-fecha-entrada="<?php echo htmlspecialchars($maq['fecha_entrada'] ?? ''); ?>"
-                              data-hora-entrada="<?php echo htmlspecialchars($maq['hora_entrada'] ?? ''); ?>"
-                              data-fecha-salida="<?php echo htmlspecialchars($maq['fecha_salida'] ?? ''); ?>"
-                              data-hora-salida="<?php echo htmlspecialchars($maq['hora_salida'] ?? ''); ?>">
-                        <i class="bi bi-pencil-square me-1"></i> Actualizar
-                      </button>
+                    <td style="text-align: right; padding-right: 16px; white-space: nowrap;">
+                      <div class="d-inline-flex gap-1 align-items-center justify-content-end">
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-primary fw-semibold btn-abrir-actualizar"
+                                data-id="<?php echo $maq['id_maquina']; ?>"
+                                data-categoria="<?php echo htmlspecialchars($maq['categoria']); ?>"
+                                data-placa="<?php echo htmlspecialchars($maq['placa']); ?>"
+                                data-modelo="<?php echo htmlspecialchars($maq['modelo']); ?>"
+                                data-caracteristicas="<?php echo htmlspecialchars($maq['caracteristicas'] ?? ''); ?>"
+                                data-ubicacion="<?php echo htmlspecialchars($maq['ubicacion_actual'] ?? ''); ?>"
+                                data-estado="<?php echo htmlspecialchars($maq['estado'] ?? 'Disponible'); ?>"
+                                data-fecha-entrada="<?php echo htmlspecialchars($maq['fecha_entrada'] ?? ''); ?>"
+                                data-hora-entrada="<?php echo htmlspecialchars($maq['hora_entrada'] ?? ''); ?>"
+                                data-fecha-salida="<?php echo htmlspecialchars($maq['fecha_salida'] ?? ''); ?>"
+                                data-hora-salida="<?php echo htmlspecialchars($maq['hora_salida'] ?? ''); ?>"
+                                title="Actualizar registro">
+                          <i class="bi bi-pencil-square me-1"></i> Actualizar
+                        </button>
+                        <form method="POST" action="registrarmaquina.php" class="d-inline m-0" onsubmit="return confirm('¿Está seguro de eliminar permanentemente la maquinaria con placa <?php echo htmlspecialchars($maq['placa']); ?>? Esta acción no se puede deshacer.');">
+                          <input type="hidden" name="action" value="eliminar_maquinaria">
+                          <input type="hidden" name="id_maquina" value="<?php echo (int)$maq['id_maquina']; ?>">
+                          <button type="submit" class="btn btn-danger btn-sm fw-semibold" title="Eliminar maquinaria permanentemente">
+                            <i class="bi bi-trash-fill"></i>
+                          </button>
+                        </form>
+                      </div>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -1236,10 +1395,18 @@ if ($conexion_ok) {
                     $entrada_txt = (!empty($veh['fecha_entrada']) ? date('d/m/Y', strtotime($veh['fecha_entrada'])) : '') . (!empty($veh['hora_entrada']) ? ' ' . substr($veh['hora_entrada'], 0, 5) : '');
                     $salida_txt  = (!empty($veh['fecha_salida']) ? date('d/m/Y', strtotime($veh['fecha_salida'])) : '') . (!empty($veh['hora_salida']) ? ' ' . substr($veh['hora_salida'], 0, 5) : '');
                   ?>
+                  <?php 
+                    $caract_raw_v = !empty($veh['caracteristicas']) ? $veh['caracteristicas'] : 'Sin descripción';
+                    $caract_truncada_v = (mb_strlen($caract_raw_v) > 28) ? mb_substr($caract_raw_v, 0, 28) . '...' : $caract_raw_v;
+                  ?>
                   <tr class="fila-vehiculo" data-estado="<?php echo htmlspecialchars($veh['estado']); ?>">
                     <td class="fw-bold text-dark campo-placa"><span class="badge bg-dark px-2 py-1"><?php echo htmlspecialchars($veh['placa']); ?></span></td>
                     <td><strong class="text-primary campo-modelo"><?php echo htmlspecialchars($veh['modelo']); ?></strong></td>
-                    <td class="text-secondary small campo-caract"><?php echo htmlspecialchars(!empty($veh['caracteristicas']) ? $veh['caracteristicas'] : 'Sin descripción'); ?></td>
+                    <td class="text-secondary small campo-caract">
+                      <span class="caract-truncate" title="Clic en Actualizar para ver el texto completo">
+                        <?php echo htmlspecialchars($caract_truncada_v); ?>
+                      </span>
+                    </td>
                     <td class="text-muted campo-lugar">
                       <i class="bi bi-geo-alt me-1 text-danger"></i><?php echo htmlspecialchars(!empty($veh['ubicacion_actual']) ? $veh['ubicacion_actual'] : 'Sin ubicación'); ?>
                     </td>
@@ -1255,22 +1422,32 @@ if ($conexion_ok) {
                         <div><i class="bi bi-box-arrow-right text-warning me-1"></i><?php echo $salida_txt; ?></div>
                       <?php endif; ?>
                     </td>
-                    <td style="text-align: right; padding-right: 20px;">
-                      <button type="button" 
-                              class="btn btn-sm btn-outline-primary fw-semibold btn-abrir-actualizar"
-                              data-id="<?php echo $veh['id_maquina']; ?>"
-                              data-categoria="<?php echo htmlspecialchars($veh['categoria']); ?>"
-                              data-placa="<?php echo htmlspecialchars($veh['placa']); ?>"
-                              data-modelo="<?php echo htmlspecialchars($veh['modelo']); ?>"
-                              data-caracteristicas="<?php echo htmlspecialchars($veh['caracteristicas'] ?? ''); ?>"
-                              data-ubicacion="<?php echo htmlspecialchars($veh['ubicacion_actual'] ?? ''); ?>"
-                              data-estado="<?php echo htmlspecialchars($veh['estado'] ?? 'Disponible'); ?>"
-                              data-fecha-entrada="<?php echo htmlspecialchars($veh['fecha_entrada'] ?? ''); ?>"
-                              data-hora-entrada="<?php echo htmlspecialchars($veh['hora_entrada'] ?? ''); ?>"
-                              data-fecha-salida="<?php echo htmlspecialchars($veh['fecha_salida'] ?? ''); ?>"
-                              data-hora-salida="<?php echo htmlspecialchars($veh['hora_salida'] ?? ''); ?>">
-                        <i class="bi bi-pencil-square me-1"></i> Actualizar
-                      </button>
+                    <td style="text-align: right; padding-right: 16px; white-space: nowrap;">
+                      <div class="d-inline-flex gap-1 align-items-center justify-content-end">
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-primary fw-semibold btn-abrir-actualizar"
+                                data-id="<?php echo $veh['id_maquina']; ?>"
+                                data-categoria="<?php echo htmlspecialchars($veh['categoria']); ?>"
+                                data-placa="<?php echo htmlspecialchars($veh['placa']); ?>"
+                                data-modelo="<?php echo htmlspecialchars($veh['modelo']); ?>"
+                                data-caracteristicas="<?php echo htmlspecialchars($veh['caracteristicas'] ?? ''); ?>"
+                                data-ubicacion="<?php echo htmlspecialchars($veh['ubicacion_actual'] ?? ''); ?>"
+                                data-estado="<?php echo htmlspecialchars($veh['estado'] ?? 'Disponible'); ?>"
+                                data-fecha-entrada="<?php echo htmlspecialchars($veh['fecha_entrada'] ?? ''); ?>"
+                                data-hora-entrada="<?php echo htmlspecialchars($veh['hora_entrada'] ?? ''); ?>"
+                                data-fecha-salida="<?php echo htmlspecialchars($veh['fecha_salida'] ?? ''); ?>"
+                                data-hora-salida="<?php echo htmlspecialchars($veh['hora_salida'] ?? ''); ?>"
+                                title="Actualizar registro">
+                          <i class="bi bi-pencil-square me-1"></i> Actualizar
+                        </button>
+                        <form method="POST" action="registrarmaquina.php" class="d-inline m-0" onsubmit="return confirm('¿Está seguro de eliminar permanentemente el vehículo con placa <?php echo htmlspecialchars($veh['placa']); ?>? Esta acción no se puede deshacer.');">
+                          <input type="hidden" name="action" value="eliminar_maquinaria">
+                          <input type="hidden" name="id_maquina" value="<?php echo (int)$veh['id_maquina']; ?>">
+                          <button type="submit" class="btn btn-danger btn-sm fw-semibold" title="Eliminar vehículo permanentemente">
+                            <i class="bi bi-trash-fill"></i>
+                          </button>
+                        </form>
+                      </div>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -1334,8 +1511,9 @@ if ($conexion_ok) {
 
               <!-- Características -->
               <div class="col-12">
-                <label for="inputCaracteristicas" class="form-label small fw-bold text-dark">Características / Especificaciones</label>
-                <textarea class="form-control" id="inputCaracteristicas" name="caracteristicas" rows="2" placeholder="Capacidad, potencia, kilometraje o detalles técnicos..."></textarea>
+                <label for="inputCaracteristicas" class="form-label small fw-bold text-dark">Características / Especificaciones (Máx. 100 caracteres)</label>
+                <textarea class="form-control" id="inputCaracteristicas" name="caracteristicas" rows="2" maxlength="100" placeholder="Capacidad, potencia, kilometraje o detalles técnicos (máx. 100 caracteres)..."></textarea>
+                <div class="form-text small text-muted">Límite: 100 caracteres.</div>
               </div>
 
               <!-- Ubicación Actual (Input de texto libre) -->
@@ -1428,8 +1606,9 @@ if ($conexion_ok) {
 
               <!-- Campos editables permitidos -->
               <div class="col-12">
-                <label for="editCaracteristicas" class="form-label small fw-bold text-dark">Características / Especificaciones</label>
-                <textarea class="form-control" id="editCaracteristicas" name="caracteristicas" rows="2"></textarea>
+                <label for="editCaracteristicas" class="form-label small fw-bold text-dark">Características / Especificaciones (Máx. 100 caracteres)</label>
+                <textarea class="form-control" id="editCaracteristicas" name="caracteristicas" rows="3" maxlength="100" placeholder="Detalles técnicos completos (hasta 100 caracteres)..."></textarea>
+                <div class="form-text small text-muted">Aquí puedes visualizar y editar el texto completo de hasta 100 caracteres.</div>
               </div>
 
               <!-- Ubicación Actual (Input de texto libre) -->
