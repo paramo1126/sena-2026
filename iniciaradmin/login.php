@@ -1,7 +1,7 @@
 <?php
 // 1. Iniciamos sesión y llamamos a la conexión (subiendo un nivel para buscar la carpeta config)
 session_start();
-include '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 $error = ""; // Variable para guardar mensajes si las credenciales fallan
 
