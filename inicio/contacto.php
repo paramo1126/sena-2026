@@ -29,7 +29,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg main-navbar">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="../inicio/index.html">
+      <a class="navbar-brand d-flex align-items-center" href="../inicio/index.php">
         <i class="bi bi-building-fill me-2"></i>
         Constructores M&M
       </a>
@@ -46,9 +46,9 @@
               Proyectos
             </a>
             <ul class="dropdown-menu" aria-labelledby="menuProyectos">
-              <li><a class="dropdown-item" href="../inicio/proyecto.html#calles">Calles pavimentadas</a></li>
-              <li><a class="dropdown-item" href="../inicio/proyecto.html#tuberias">Tuberias</a></li>
-              <li><a class="dropdown-item" href="../inicio/proyecto.html#evidencias">Evidencias</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#calles">Calles pavimentadas</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#tuberias">Tuberias</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#evidencias">Evidencias</a></li>
             </ul>
           </li>
           <li class="nav-item">
@@ -170,10 +170,10 @@
         <div class="col-lg-4 col-sm-6">
           <h5 class="fw-bold text-white mb-3">Enlaces rápidos</h5>
           <ul class="list-unstyled">
-            <li class="mb-2"><a href="../inicio/index.html">Inicio</a></li>
-            <li class="mb-2"><a href="#nosotros">Nosotros</a></li>
-            <li class="mb-2"><a href="#servicios">Proyectos</a></li>
-            <li class="mb-2"><a href="#contacto">Contacto</a></li>
+            <li class="mb-2"><a href="../inicio/index.php">Inicio</a></li>
+            <li class="mb-2"><a href="../inicio/nosotros.php">Nosotros</a></li>
+            <li class="mb-2"><a href="../inicio/proyecto.php">Proyectos</a></li>
+            <li class="mb-2"><a href="../inicio/contacto.php">Contacto</a></li>
           </ul>
         </div>
         <div class="col-lg-4 col-sm-6">

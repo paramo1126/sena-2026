@@ -969,6 +969,49 @@ if ($conexion_ok) {
       background-color: #f8fafc;
     }
 
+    .table-custom th,
+    .table-custom td {
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .table-col-accion {
+      max-width: 220px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .table-col-modelo {
+      max-width: 220px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .table-col-ubicacion {
+      max-width: 170px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* PLACA VEHICULAR AMARILLA (ESTILO COLOMBIANA / M&M) */
+    .placa-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: #fef08a !important; /* Amarillo claro vehicular luminoso (estilo placa colombiana) */
+      color: #0f172a !important;      /* Letras oscuras negro/navy de máxima legibilidad y contraste */
+      border: 1.5px solid #d4a017 !important; /* Borde ámbar/dorado de placa metálica */
+      border-radius: 6px !important;
+      padding: 3px 9px !important;
+      font-family: 'Consolas', 'Roboto Mono', 'SFMono-Regular', monospace !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.12em !important;
+      line-height: 1.15 !important;
+      text-transform: uppercase !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+
     /* Fondo tenue al desplegar el menú */
     .sidebar-backdrop {
       display: none;
@@ -997,6 +1040,19 @@ if ($conexion_ok) {
       }
       .admin-content {
         padding: 24px 16px 50px 16px;
+      }
+      .table-custom th, .table-custom td {
+        padding: 10px 10px;
+        font-size: 0.80rem;
+      }
+      .table-col-modelo {
+        max-width: 140px;
+      }
+      .table-col-ubicacion {
+        max-width: 110px;
+      }
+      .table-col-accion {
+        max-width: 130px;
       }
     }
   </style>
@@ -1105,7 +1161,7 @@ if ($conexion_ok) {
             <span>Configuración</span>
           </button>
 
-          <a href="../inicio/index.php" class="dropdown-item-custom text-logout">
+          <a href="logout.php" class="dropdown-item-custom text-logout">
             <i class="bi bi-box-arrow-right"></i>
             <span>Cerrar sesión</span>
           </a>
@@ -1360,23 +1416,33 @@ if ($conexion_ok) {
 
                     $ent_str = (!empty($act['fecha_entrada']) ? date('d/m/Y', strtotime($act['fecha_entrada'])) : '') . (!empty($act['hora_entrada']) ? ' ' . substr($act['hora_entrada'], 0, 5) : '');
                     $sal_str = (!empty($act['fecha_salida']) ? date('d/m/Y', strtotime($act['fecha_salida'])) : '') . (!empty($act['hora_salida']) ? ' ' . substr($act['hora_salida'], 0, 5) : '');
+
+                    // Limitación de varchar para evitar deslizamiento horizontal y garantizar responsividad
+                    $accion_raw = $act['accion'] ?? 'Movimiento registrado';
+                    $accion_display = (mb_strlen($accion_raw) > 36) ? mb_substr($accion_raw, 0, 33) . '...' : $accion_raw;
+
+                    $modelo_raw = $act['modelo'] ?? 'Equipo';
+                    $modelo_display = (mb_strlen($modelo_raw) > 26) ? mb_substr($modelo_raw, 0, 23) . '...' : $modelo_raw;
+
+                    $ubicacion_raw = !empty($act['ubicacion']) ? $act['ubicacion'] : 'Sin asignar';
+                    $ubicacion_display = (mb_strlen($ubicacion_raw) > 22) ? mb_substr($ubicacion_raw, 0, 19) . '...' : $ubicacion_raw;
                   ?>
                   <tr>
-                    <td class="text-muted small">
+                    <td class="text-muted small text-nowrap">
                       <i class="bi bi-clock me-1 text-secondary"></i>
                       <?php echo $fecha_reg; ?>
                     </td>
-                    <td class="fw-bold text-dark">
-                      <?php echo htmlspecialchars($act['accion'] ?? 'Movimiento registrado'); ?>
+                    <td class="fw-bold text-dark table-col-accion" title="<?php echo htmlspecialchars($accion_raw); ?>">
+                      <?php echo htmlspecialchars($accion_display); ?>
                     </td>
-                    <td>
+                    <td class="table-col-modelo" title="<?php echo htmlspecialchars($modelo_raw); ?>">
                       <i class="bi <?php echo $icono_cat; ?> me-1"></i>
-                      <strong><?php echo htmlspecialchars($act['modelo'] ?? 'Equipo'); ?></strong>
-                      <span class="badge bg-dark text-white ms-1"><?php echo htmlspecialchars($act['placa'] ?? 'N/A'); ?></span>
+                      <strong><?php echo htmlspecialchars($modelo_display); ?></strong>
+                      <span class="placa-badge ms-1"><?php echo htmlspecialchars($act['placa'] ?? 'N/A'); ?></span>
                     </td>
-                    <td class="text-secondary">
+                    <td class="text-secondary table-col-ubicacion" title="<?php echo htmlspecialchars($ubicacion_raw); ?>">
                       <i class="bi bi-geo-alt-fill text-danger me-1"></i>
-                      <?php echo htmlspecialchars(!empty($act['ubicacion']) ? $act['ubicacion'] : 'Sin asignar'); ?>
+                      <?php echo htmlspecialchars($ubicacion_display); ?>
                     </td>
                     <td>
                       <span class="status-pill-badge <?php echo $pill_class; ?>">

@@ -1,14 +1,21 @@
 <?php
 // 1. Iniciamos sesión y llamamos a la conexión (subiendo un nivel para buscar la carpeta config)
 session_start();
+
+// Si ya tiene sesión activa, redirigir directo al dashboard
+if (!empty($_SESSION['admin_activo'])) {
+    header("Location: ../administrador/desboard.php");
+    exit();
+}
+
 require_once __DIR__ . '/../config/conexion.php';
 
 $error = ""; // Variable para guardar mensajes si las credenciales fallan
 
 // 2. Verificamos si el usuario le dio clic al botón de enviar (método POST)
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $usuario_ingresado = $_POST['usuario'];
-    $password_ingresada = $_POST['password'];
+    $usuario_ingresado = trim($_POST['usuario'] ?? '');
+    $password_ingresada = trim($_POST['password'] ?? '');
 
     // 3. Consulta preparada para buscar el usuario de forma segura
     $sql = "SELECT * FROM usuarios WHERE usuario = ?";
@@ -21,10 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($resultado->num_rows > 0) {
         $row = $resultado->fetch_assoc();
         
-        // Comparamos la contraseña ingresada con la de la base de datos
-        if ($password_ingresada === $row['clave']) {
-            // Si coincide, creamos la sesión y redirigimos al indexx.php dentro de la carpeta administrador
-            $_SESSION['admin_activo'] = $usuario_ingresado;
+        // Comparamos la contraseña ingresada con la de la base de datos (texto plano o hash seguro)
+        if ($password_ingresada === $row['clave'] || password_verify($password_ingresada, $row['clave'])) {
+            // Si coincide, creamos la sesión y redirigimos al dashboard
+            $_SESSION['admin_activo'] = $row['usuario'];
             header("Location: ../administrador/desboard.php");
             exit();
         } else {

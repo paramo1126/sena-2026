@@ -672,6 +672,25 @@ if ($conexion_ok) {
       opacity: 1;
     }
 
+    /* PLACA VEHICULAR AMARILLA (ESTILO COLOMBIANA / M&M) */
+    .placa-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: #fef08a !important; /* Amarillo claro vehicular luminoso (estilo placa colombiana) */
+      color: #0f172a !important;      /* Letras oscuras negro/navy de máxima legibilidad y contraste */
+      border: 1.5px solid #d4a017 !important; /* Borde ámbar/dorado de placa metálica */
+      border-radius: 6px !important;
+      padding: 3px 9px !important;
+      font-family: 'Consolas', 'Roboto Mono', 'SFMono-Regular', monospace !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.12em !important;
+      line-height: 1.15 !important;
+      text-transform: uppercase !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+
     @media (max-width: 768px) {
       .admin-topbar {
         padding: 0 16px 0 80px;
@@ -789,7 +808,7 @@ if ($conexion_ok) {
             <span>Configuración</span>
           </button>
 
-          <a href="../inicio/index.php" class="dropdown-item-custom text-logout">
+          <a href="logout.php" class="dropdown-item-custom text-logout">
             <i class="bi bi-box-arrow-right"></i>
             <span>Cerrar sesión</span>
           </a>

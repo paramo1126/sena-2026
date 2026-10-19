@@ -112,9 +112,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $categoria       = trim($_POST['categoria'] ?? 'Maquinaria');
         $placa_raw       = trim($_POST['placa'] ?? '');
         $placa           = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $placa_raw)); // Solo 6 caracteres alfanuméricos en mayúsculas
-        $modelo          = trim($_POST['modelo'] ?? '');
+        $modelo          = mb_substr(trim($_POST['modelo'] ?? ''), 0, 30);
         $caracteristicas = mb_substr(trim($_POST['caracteristicas'] ?? ''), 0, 100);
-        $ubicacion       = trim($_POST['ubicacion_actual'] ?? '');
+        $ubicacion       = mb_substr(trim($_POST['ubicacion_actual'] ?? ''), 0, 50);
         $estado          = trim($_POST['estado'] ?? 'Disponible');
         $fecha_entrada   = !empty($_POST['fecha_entrada']) ? $_POST['fecha_entrada'] : null;
         $hora_entrada    = !empty($_POST['hora_entrada']) ? $_POST['hora_entrada'] : null;
@@ -187,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'actualizar_maquinaria') {
         $id_maquina      = (int)($_POST['id_maquina'] ?? 0);
         $caracteristicas = mb_substr(trim($_POST['caracteristicas'] ?? ''), 0, 100);
-        $ubicacion       = trim($_POST['ubicacion_actual'] ?? '');
+        $ubicacion       = mb_substr(trim($_POST['ubicacion_actual'] ?? ''), 0, 50);
         $estado          = trim($_POST['estado'] ?? 'Disponible');
         $fecha_entrada   = !empty($_POST['fecha_entrada']) ? $_POST['fecha_entrada'] : null;
         $hora_entrada    = !empty($_POST['hora_entrada']) ? $_POST['hora_entrada'] : null;
@@ -996,6 +996,11 @@ if ($conexion_ok) {
       background-color: #f8fafc;
     }
 
+    /* Soporte para celdas truncadas con d-inline-block sin alterar el modelo de columnas de la tabla */
+    .table-custom td.d-inline-block {
+      display: table-cell !important;
+    }
+
     /* Truncado de características largas y responsividad */
     .campo-caract {
       max-width: 180px;
@@ -1008,6 +1013,25 @@ if ($conexion_ok) {
       text-overflow: ellipsis;
       white-space: nowrap;
       vertical-align: middle;
+    }
+
+    /* PLACA VEHICULAR AMARILLA (ESTILO COLOMBIANA / M&M) */
+    .placa-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: #fef08a !important; /* Amarillo claro vehicular luminoso (estilo placa colombiana) */
+      color: #0f172a !important;      /* Letras oscuras negro/navy de máxima legibilidad y contraste */
+      border: 1.5px solid #d4a017 !important; /* Borde ámbar/dorado de placa metálica */
+      border-radius: 6px !important;
+      padding: 3px 9px !important;
+      font-family: 'Consolas', 'Roboto Mono', 'SFMono-Regular', monospace !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.12em !important;
+      line-height: 1.15 !important;
+      text-transform: uppercase !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
     }
 
     .table-responsive {
@@ -1167,7 +1191,7 @@ if ($conexion_ok) {
             <span>Configuración</span>
           </button>
 
-          <a href="../inicio/index.php" class="dropdown-item-custom text-logout">
+          <a href="logout.php" class="dropdown-item-custom text-logout">
             <i class="bi bi-box-arrow-right"></i>
             <span>Cerrar sesión</span>
           </a>
@@ -1274,14 +1298,14 @@ if ($conexion_ok) {
                     $caract_truncada = (mb_strlen($caract_raw) > 28) ? mb_substr($caract_raw, 0, 28) . '...' : $caract_raw;
                   ?>
                   <tr class="fila-maquinaria" data-estado="<?php echo htmlspecialchars($maq['estado']); ?>">
-                    <td class="fw-bold text-dark campo-placa"><span class="badge bg-dark px-2 py-1"><?php echo htmlspecialchars($maq['placa']); ?></span></td>
-                    <td><strong class="text-primary campo-modelo"><?php echo htmlspecialchars($maq['modelo']); ?></strong></td>
-                    <td class="text-secondary small campo-caract">
+                    <td class="fw-bold text-dark campo-placa"><span class="placa-badge"><?php echo htmlspecialchars($maq['placa']); ?></span></td>
+                    <td class="d-inline-block text-truncate text-break" style="max-width: 150px;" title="<?php echo htmlspecialchars($maq['modelo']); ?>"><strong class="text-primary campo-modelo"><?php echo htmlspecialchars($maq['modelo']); ?></strong></td>
+                    <td class="text-secondary small campo-caract d-inline-block text-truncate text-break" style="max-width: 150px;" title="<?php echo htmlspecialchars(!empty($maq['caracteristicas']) ? $maq['caracteristicas'] : 'Sin descripción'); ?>">
                       <span class="caract-truncate" title="Clic en Actualizar para ver el texto completo">
                         <?php echo htmlspecialchars($caract_truncada); ?>
                       </span>
                     </td>
-                    <td class="text-muted campo-lugar">
+                    <td class="text-muted campo-lugar d-inline-block text-truncate text-break" style="max-width: 150px;" title="<?php echo htmlspecialchars(!empty($maq['ubicacion_actual']) ? $maq['ubicacion_actual'] : 'Sin ubicación'); ?>">
                       <i class="bi bi-geo-alt me-1 text-danger"></i><?php echo htmlspecialchars(!empty($maq['ubicacion_actual']) ? $maq['ubicacion_actual'] : 'Sin ubicación'); ?>
                     </td>
                     <td>
@@ -1400,14 +1424,14 @@ if ($conexion_ok) {
                     $caract_truncada_v = (mb_strlen($caract_raw_v) > 28) ? mb_substr($caract_raw_v, 0, 28) . '...' : $caract_raw_v;
                   ?>
                   <tr class="fila-vehiculo" data-estado="<?php echo htmlspecialchars($veh['estado']); ?>">
-                    <td class="fw-bold text-dark campo-placa"><span class="badge bg-dark px-2 py-1"><?php echo htmlspecialchars($veh['placa']); ?></span></td>
-                    <td><strong class="text-primary campo-modelo"><?php echo htmlspecialchars($veh['modelo']); ?></strong></td>
-                    <td class="text-secondary small campo-caract">
+                    <td class="fw-bold text-dark campo-placa"><span class="placa-badge"><?php echo htmlspecialchars($veh['placa']); ?></span></td>
+                    <td class="d-inline-block text-truncate text-break" style="max-width: 150px;" title="<?php echo htmlspecialchars($veh['modelo']); ?>"><strong class="text-primary campo-modelo"><?php echo htmlspecialchars($veh['modelo']); ?></strong></td>
+                    <td class="text-secondary small campo-caract d-inline-block text-truncate text-break" style="max-width: 150px;" title="<?php echo htmlspecialchars(!empty($veh['caracteristicas']) ? $veh['caracteristicas'] : 'Sin descripción'); ?>">
                       <span class="caract-truncate" title="Clic en Actualizar para ver el texto completo">
                         <?php echo htmlspecialchars($caract_truncada_v); ?>
                       </span>
                     </td>
-                    <td class="text-muted campo-lugar">
+                    <td class="text-muted campo-lugar d-inline-block text-truncate text-break" style="max-width: 150px;" title="<?php echo htmlspecialchars(!empty($veh['ubicacion_actual']) ? $veh['ubicacion_actual'] : 'Sin ubicación'); ?>">
                       <i class="bi bi-geo-alt me-1 text-danger"></i><?php echo htmlspecialchars(!empty($veh['ubicacion_actual']) ? $veh['ubicacion_actual'] : 'Sin ubicación'); ?>
                     </td>
                     <td>
@@ -1506,7 +1530,7 @@ if ($conexion_ok) {
               <!-- Modelo -->
               <div class="col-md-4">
                 <label for="inputModelo" class="form-label small fw-bold text-dark">Modelo / Referencia *</label>
-                <input type="text" class="form-control" id="inputModelo" name="modelo" placeholder="Ej: Caterpillar 320D / Hilux" required>
+                <input type="text" class="form-control" id="inputModelo" name="modelo" placeholder="Ej: Caterpillar 320D / Hilux" maxlength="30" required>
               </div>
 
               <!-- Características -->
@@ -1521,7 +1545,7 @@ if ($conexion_ok) {
                 <label for="inputUbicacion" class="form-label small fw-bold text-dark">Ubicación Actual (Texto Libre)</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="bi bi-geo-alt text-danger"></i></span>
-                  <input type="text" class="form-control" id="inputUbicacion" name="ubicacion_actual" placeholder="Ej: Frente Autopista Norte Km 15, Patio Central, Taller...">
+                  <input type="text" class="form-control" id="inputUbicacion" name="ubicacion_actual" placeholder="Ej: Frente Autopista Norte Km 15, Patio Central, Taller..." maxlength="50">
                 </div>
               </div>
 
@@ -1599,7 +1623,7 @@ if ($conexion_ok) {
 
               <div class="col-md-4">
                 <label class="form-label small fw-bold text-muted">Modelo <i class="bi bi-lock-fill text-secondary ms-1"></i></label>
-                <input type="text" class="form-control bg-light" id="editModelo" readonly>
+                <input type="text" class="form-control bg-light" id="editModelo" maxlength="30" readonly>
               </div>
 
               <div class="col-12"><hr class="my-1 text-muted"></div>
@@ -1616,7 +1640,7 @@ if ($conexion_ok) {
                 <label for="editUbicacion" class="form-label small fw-bold text-dark">Ubicación Actual (Texto Libre)</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="bi bi-geo-alt text-danger"></i></span>
-                  <input type="text" class="form-control" id="editUbicacion" name="ubicacion_actual" placeholder="Ubicación o frente de obra...">
+                  <input type="text" class="form-control" id="editUbicacion" name="ubicacion_actual" placeholder="Ubicación o frente de obra..." maxlength="50">
                 </div>
               </div>
 
