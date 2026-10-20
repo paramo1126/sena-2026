@@ -1687,7 +1687,7 @@ if (isset($_GET['ajax_chat_query']) || isset($_POST['ajax_chat_query']) || (isse
       <div class="mmchat-header-text">
         <div class="mmchat-header-name">
           M&M Asistente
-          <span class="mmchat-badge-ia">IA</span>
+
         </div>
         <div class="mmchat-header-status">
           <span class="mmchat-status-dot"></span>
@@ -1717,7 +1717,7 @@ if (isset($_GET['ajax_chat_query']) || isset($_POST['ajax_chat_query']) || (isse
       <div class="mmchat-msg-icon">M&M</div>
       <div class="mmchat-msg-content">
         <div class="mmchat-bubble">
-          👋 ¡Hola! Bienvenido al consultor de flota de <strong>Construcciones M&M</strong>.<br><br>
+           ¡Hola! Bienvenido al consultor de flota de <strong>Construcciones M&M</strong>.<br><br>
           Puedes consultarme en tiempo real por <strong>placa</strong> (ej: <code>ABC123</code>), <strong>fecha</strong> (ej: <code><?php echo date('d/m/Y'); ?></code>) o <strong>modelo</strong> (ej: <code>WIWI</code>, <code>RENAULT</code>).
         </div>
         <span class="mmchat-msg-time"><?php echo date('h:i A'); ?></span>
@@ -1889,7 +1889,7 @@ if (isset($_GET['ajax_chat_query']) || isset($_POST['ajax_chat_query']) || (isse
     },
     {
       keys: ['hola', 'buenos', 'buenas', 'saludos', 'hey'],
-      reply: '¡Hola! 👋 Es un gusto atenderte. Puedes escribir una <strong>placa</strong> (ej: <code>ABC123</code>), una <strong>fecha</strong> o <code>movimientos</code> para consultar la base de datos.'
+      reply: '¡Hola! Es un gusto atenderte. Puedes escribir una <strong>placa</strong> (ej: <code>ABC123</code>), una <strong>fecha</strong> o <code>movimientos</code> para consultar la base de datos.'
     },
     {
       keys: ['gracias', 'perfecto', 'listo', 'excelente', 'genial'],

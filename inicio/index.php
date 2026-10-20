@@ -1,3 +1,35 @@
+<?php
+/**
+ * ==============================================================================
+ * Constructores M&M - Página Principal (Inicio)
+ * Conexión centralizada y consulta directa a la base de datos MySQL
+ * ==============================================================================
+ */
+require_once __DIR__ . '/../config/conexion.php';
+
+// Consulta directa a la tabla contenido_inicio (fila id = 1)
+$contenido = [];
+if (isset($conexion) && $conexion instanceof mysqli && !$conexion->connect_error) {
+    $res = $conexion->query("SELECT * FROM `contenido_inicio` WHERE `id` = 1 LIMIT 1");
+    if ($res && $res->num_rows > 0) {
+        $contenido = $res->fetch_assoc();
+    }
+}
+
+// Función auxiliar para resolver la ruta de imágenes sin archivos intermediarios
+if (!function_exists('resolver_ruta_img')) {
+    function resolver_ruta_img($ruta, $base_dir = '../imagenes/') {
+        $ruta = trim((string)$ruta);
+        if ($ruta === '') {
+            return $base_dir . 'imagen1.png';
+        }
+        if (preg_match('/^https?:\/\//i', $ruta) || str_starts_with($ruta, '/') || str_starts_with($ruta, '../')) {
+            return $ruta;
+        }
+        return rtrim($base_dir, '/') . '/' . ltrim($ruta, '/');
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -66,11 +98,10 @@
     </div>
   </nav>
 
-
   <!-- Hero Section -->
   <header class="hero-home">
     <div class="hero-home-bg">
-      <img src="../imagenes/imagen1.png" alt="Construcciones M&M - Obras Civiles y Redes de Gas" class="hero-home-img" fetchpriority="high">
+      <img src="<?php echo htmlspecialchars(resolver_ruta_img($contenido['b1_imagen'] ?? $contenido['hero_imagen'] ?? 'imagen1.png')); ?>" alt="Construcciones M&M - Obras Civiles y Redes de Gas" class="hero-home-img" fetchpriority="high">
       <div class="hero-home-overlay"></div>
     </div>
     <div class="container position-relative hero-home-content">
@@ -81,10 +112,17 @@
             <span>EXPERIENCIA • CALIDAD • SEGURIDAD</span>
           </div>
           <h1 class="hero-home-title text-uppercase">
-            BIENVENIDO A <span class="text-gold-highlight">CONSTRUCCIONES M&M</span>
+            <?php 
+            $hero_tit_val = htmlspecialchars($contenido['b1_titulo'] ?? $contenido['hero_titulo'] ?? 'BIENVENIDO A CONSTRUCCIONES M&M', ENT_QUOTES, 'UTF-8');
+            if (stripos($hero_tit_val, 'CONSTRUCCIONES M&M') !== false) {
+                echo str_ireplace('CONSTRUCCIONES M&M', '<span class="text-gold-highlight">CONSTRUCCIONES M&M</span>', $hero_tit_val);
+            } else {
+                echo $hero_tit_val;
+            }
+            ?>
           </h1>
           <p class="hero-home-lead">
-            Soluciones integrales de alta ingeniería en construcción civil y redes de gas natural. Proyectos seguros, modernos y con los más altos estándares de calidad.
+            <?php echo nl2br(htmlspecialchars($contenido['b1_subtitulo'] ?? $contenido['hero_subtitulo'] ?? '', ENT_QUOTES, 'UTF-8')); ?>
           </p>
           <div class="hero-home-buttons d-flex flex-wrap justify-content-center gap-3 mt-4">
             <a href="#nosotros" class="btn btn-hero-primary">
@@ -101,6 +139,7 @@
       <i class="bi bi-chevron-double-down"></i>
     </a>
   </header>
+
   <!-- Nosotros -->
   <section id="nosotros" class="py-5">
     <div class="container py-4">
@@ -148,9 +187,9 @@
   <section id="servicios" class="py-5 bg-light">
     <div class="container py-4">
       <div class="text-center mb-5">
-        <h2 class="section-title">Nuestros servicios</h2>
+        <h2 class="section-title"><?php echo htmlspecialchars($contenido['b2_titulo'] ?? $contenido['servicios_titulo'] ?? 'Nuestros servicios'); ?></h2>
         <p class="text-gray mx-auto" style="max-width: 600px;">
-          Ofrecemos soluciones completas para el sector de la construcción y la infraestructura energética.
+          <?php echo nl2br(htmlspecialchars($contenido['b2_subtitulo'] ?? $contenido['servicios_subtitulo'] ?? '')); ?>
         </p>
       </div>
       <div class="row g-4">
@@ -159,14 +198,19 @@
             <div class="service-icon">
               <i class="bi bi-building"></i>
             </div>
-            <h3 class="h4 text-navy fw-bold mb-3">Construcción Civil</h3>
+            <h3 class="h4 text-navy fw-bold mb-3"><?php echo htmlspecialchars($contenido['t1_titulo'] ?? $contenido['servicio1_titulo'] ?? 'Construcción Civil'); ?></h3>
             <p class="text-gray">
-              Ejecutamos obras residenciales, comerciales e industriales con procesos certificados, control de calidad en cada etapa y entrega puntual. Desde cimentación hasta acabados finales.
+              <?php echo nl2br(htmlspecialchars($contenido['t1_texto'] ?? $contenido['servicio1_texto'] ?? '')); ?>
             </p>
             <ul class="list-unstyled mt-3 text-gray">
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Edificaciones residenciales y multifamiliares</li>
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Obras comerciales e industriales</li>
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Remodelaciones y ampliaciones</li>
+              <?php 
+              $vinetas1 = array_filter(array_map('trim', explode("\n", (string)($contenido['t1_vinetas'] ?? $contenido['servicio1_vinetas'] ?? ''))));
+              foreach ($vinetas1 as $v):
+                $v_limpia = ltrim($v, "-•* \t\n\r\0\x0B");
+                if ($v_limpia === '') continue;
+              ?>
+                <li><i class="bi bi-chevron-right text-gold me-2"></i><?php echo htmlspecialchars($v_limpia); ?></li>
+              <?php endforeach; ?>
             </ul>
           </div>
         </div>
@@ -175,14 +219,19 @@
             <div class="service-icon">
               <i class="bi bi-fire"></i>
             </div>
-            <h3 class="h4 text-navy fw-bold mb-3">Redes de Gas</h3>
+            <h3 class="h4 text-navy fw-bold mb-3"><?php echo htmlspecialchars($contenido['t2_titulo'] ?? $contenido['servicio2_titulo'] ?? 'Redes de Gas'); ?></h3>
             <p class="text-gray">
-              Diseñamos, construimos y mantenemos redes de gas natural para proyectos urbanos e industriales, garantizando seguridad, eficiencia y cumplimiento de la normativa técnica.
+              <?php echo nl2br(htmlspecialchars($contenido['t2_texto'] ?? $contenido['servicio2_texto'] ?? '')); ?>
             </p>
             <ul class="list-unstyled mt-3 text-gray">
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Instalación de redes internas y externas</li>
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Mantenimiento y rehabilitación</li>
-              <li><i class="bi bi-chevron-right text-gold me-2"></i>Pruebas de hermeticidad y certificaciones</li>
+              <?php 
+              $vinetas2 = array_filter(array_map('trim', explode("\n", (string)($contenido['t2_vinetas'] ?? $contenido['servicio2_vinetas'] ?? ''))));
+              foreach ($vinetas2 as $v):
+                $v_limpia = ltrim($v, "-•* \t\n\r\0\x0B");
+                if ($v_limpia === '') continue;
+              ?>
+                <li><i class="bi bi-chevron-right text-gold me-2"></i><?php echo htmlspecialchars($v_limpia); ?></li>
+              <?php endforeach; ?>
             </ul>
           </div>
         </div>
@@ -193,63 +242,61 @@
 
   </section>
   <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-ride="carousel" data-bs-touch="true" data-bs-interval="3500" data-bs-pause="false">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="../imagenes/imagen 22.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 1">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="<?php echo htmlspecialchars(resolver_ruta_img($contenido['carrusel_img1'] ?? 'imagen 22.png')); ?>" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 1">
+      </div>
+      <div class="carousel-item">
+        <img src="<?php echo htmlspecialchars(resolver_ruta_img($contenido['carrusel_img2'] ?? 'imagen 33.png')); ?>" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 2">
+      </div>
+      <div class="carousel-item">
+        <img src="<?php echo htmlspecialchars(resolver_ruta_img($contenido['carrusel_img3'] ?? 'imagen 44.png')); ?>" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 3">
+      </div>
     </div>
-    <div class="carousel-item">
-      <img src="../imagenes/imagen 33.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 2">
-    </div>
-    <div class="carousel-item">
-      <img src="../imagenes/imagen 44.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 3">
-    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-
-</div>
 
   <!-- Por qué elegirnos -->
   <section class="py-5">
     <div class="container py-4">
       <div class="text-center mb-5">
-        <h2 class="section-title">¿Por qué elegirnos?</h2>
+        <h2 class="section-title"><?php echo htmlspecialchars($contenido['b3_titulo'] ?? $contenido['elegirnos_titulo'] ?? '¿Por qué elegirnos?'); ?></h2>
         <p class="text-gray mx-auto" style="max-width: 600px;">
-          Nuestro compromiso es convertir cada proyecto en una obra segura, eficiente y duradera.
+          <?php echo nl2br(htmlspecialchars($contenido['b3_subtitulo'] ?? $contenido['elegirnos_subtitulo'] ?? '')); ?>
         </p>
       </div>
       <div class="row g-4">
         <div class="col-md-4">
           <div class="why-card">
             <div class="why-icon"><i class="bi bi-shield-check"></i></div>
-            <h4 class="text-navy fw-bold">Seguridad garantizada</h4>
-            <p class="text-gray">Protocolos estrictos de seguridad industrial y personal capacitado para minimizar riesgos en obra.</p>
+            <h4 class="text-navy fw-bold"><?php echo htmlspecialchars($contenido['m1_titulo'] ?? $contenido['elegirnos_item1_titulo'] ?? 'Seguridad garantizada'); ?></h4>
+            <p class="text-gray"><?php echo nl2br(htmlspecialchars($contenido['m1_texto'] ?? $contenido['elegirnos_item1_texto'] ?? '')); ?></p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="why-card">
             <div class="why-icon"><i class="bi bi-award"></i></div>
-            <h4 class="text-navy fw-bold">Experiencia comprobada</h4>
-            <p class="text-gray">Más de 15 años desarrollando proyectos de construcción e infraestructura de gas.</p>
+            <h4 class="text-navy fw-bold"><?php echo htmlspecialchars($contenido['m2_titulo'] ?? $contenido['elegirnos_item2_titulo'] ?? 'Experiencia comprobada'); ?></h4>
+            <p class="text-gray"><?php echo nl2br(htmlspecialchars($contenido['m2_texto'] ?? $contenido['elegirnos_item2_texto'] ?? '')); ?></p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="why-card">
             <div class="why-icon"><i class="bi bi-file-check"></i></div>
-            <h4 class="text-navy fw-bold">Cumplimiento normativo</h4>
-            <p class="text-gray">Trabajamos bajo los estándares técnicos y legales vigentes en cada fase del proyecto.</p>
+            <h4 class="text-navy fw-bold"><?php echo htmlspecialchars($contenido['m3_titulo'] ?? $contenido['elegirnos_item3_titulo'] ?? 'Cumplimiento normativo'); ?></h4>
+            <p class="text-gray"><?php echo nl2br(htmlspecialchars($contenido['m3_texto'] ?? $contenido['elegirnos_item3_texto'] ?? '')); ?></p>
           </div>
         </div>
       </div>
     </div>
   </section>
-
 
   <!-- Footer -->
   <footer id="contacto" class="bg-navy-light pt-5 pb-4">
@@ -280,22 +327,26 @@
         </div>
         <div class="col-lg-4 col-sm-6">
           <h5 class="fw-bold text-white mb-3">Contacto</h5>
-          <div class="footer-contact-item">
-            <i class="bi bi-geo-alt-fill"></i>
-            <span>Neiva, Huila, Colombia</span>
-          </div>
-          <div class="footer-contact-item">
-            <i class="bi bi-telephone-fill"></i>
-            <span>+57 310 291 6140</span>
-          </div>
-          <div class="footer-contact-item">
-            <i class="bi bi-envelope-fill"></i>
-            <span>contacto@constructoresmym.com</span>
-          </div>
-          <div class="footer-contact-item">
-            <i class="bi bi-clock-fill"></i>
-            <span>Lunes a viernes: 8:00 a.m. - 5:00 p.m.</span>
-          </div>
+          <?php 
+          $contacto_items = array_filter(array_map('trim', explode("\n", (string)($contenido['footer_vinetas'] ?? $contenido['footer_contacto_vinetas'] ?? ''))));
+          $iconos_contacto = [
+            'bi bi-geo-alt-fill',
+            'bi bi-telephone-fill',
+            'bi bi-envelope-fill',
+            'bi bi-clock-fill'
+          ];
+          $idx_c = 0;
+          foreach ($contacto_items as $c_item):
+            $c_limpia = ltrim($c_item, "-•* \t\n\r\0\x0B");
+            if ($c_limpia === '') continue;
+            $icono_c = $iconos_contacto[$idx_c] ?? 'bi bi-info-circle-fill';
+            $idx_c++;
+          ?>
+            <div class="footer-contact-item">
+              <i class="<?php echo $icono_c; ?>"></i>
+              <span><?php echo htmlspecialchars($c_limpia); ?></span>
+            </div>
+          <?php endforeach; ?>
         </div>
       </div>
       <hr class="border-secondary mt-4">
@@ -305,14 +356,16 @@
       </div>
     </div>
   </footer>
-<!-- Botón Flotante de WhatsApp con Animación -->
-<a href="https://wa.me/573026043945?text=Hola,%20como%20estas%20información%20sobre%20sus%20servicios" 
-   class="btn-whatsapp" 
-   target="_blank" 
-   rel="noopener noreferrer" 
-   aria-label="Contactar por WhatsApp">
-  <i class="bi bi-whatsapp"></i>
-</a>
+
+  <!-- Botón Flotante de WhatsApp con Animación -->
+  <a href="https://wa.me/573026043945?text=Hola,%20como%20estas%20información%20sobre%20sus%20servicios" 
+     class="btn-whatsapp" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Contactar por WhatsApp">
+    <i class="bi bi-whatsapp"></i>
+  </a>
+
   <script>
     (function () {
       var marqueeDuration = 24000;
@@ -321,7 +374,6 @@
 
       if (!startTime) {
         startTime = Date.now();
-        localStorage.setItem(storageKey, String(startTime));
       }
 
       var elapsed = (Date.now() - startTime) % marqueeDuration;
