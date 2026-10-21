@@ -690,7 +690,7 @@ if ($conexion_ok) {
             'c3_desc' => 'VARCHAR(100) NOT NULL DEFAULT "Cotizaciones y soporte"',
             'c4_dato' => 'VARCHAR(100) NOT NULL DEFAULT "Neiva, Huila, Colombia"',
             'c4_desc' => 'VARCHAR(100) NOT NULL DEFAULT "Area de servicio"',
-            'mapa_busqueda' => 'VARCHAR(150) NOT NULL DEFAULT "Neiva, Huila, Colombia"',
+            'mapa_busqueda' => 'TEXT NOT NULL',
             'mapa_titulo' => 'VARCHAR(150) NOT NULL DEFAULT "Estamos en Neiva, Huila"',
             'mapa_texto' => 'TEXT NOT NULL'
         ];
@@ -700,6 +700,8 @@ if ($conexion_ok) {
                 $conexion->query("ALTER TABLE `contenido_contacto` ADD COLUMN `{$col_c}` {$tipo_c};");
             }
         }
+        // Asegurar que mapa_busqueda sea tipo TEXT para soportar direcciones largas o iframes
+        $conexion->query("ALTER TABLE `contenido_contacto` MODIFY COLUMN `mapa_busqueda` TEXT NOT NULL;");
 
         // 3. Verificación del registro inicial (id = 1)
         $res_cont = $conexion->query("SELECT * FROM `contenido_contacto` WHERE `id` = 1 LIMIT 1");
@@ -741,6 +743,53 @@ if ($conexion_ok) {
                 $contenido_contacto[$clave] = $val_def;
             }
         }
+    }
+}
+
+// Funciones auxiliares para Google Maps (soporta direcciones, coordenadas, iframes completos y enlaces directos)
+if (!function_exists('resolver_mapa_embed')) {
+    function resolver_mapa_embed($input) {
+        $input = trim((string)$input);
+        if ($input === '') {
+            $input = 'Neiva, Huila, Colombia';
+        }
+        if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/i', $input, $m)) {
+            return $m[1];
+        }
+        if (preg_match('/^https?:\/\/(?:www\.)?google\.[a-z.]+\/maps\/embed/i', $input)) {
+            return $input;
+        }
+        if (preg_match('/^https?:\/\/(?:www\.)?google\.[a-z.]+\/maps\/?\?[^"]*q=([^&]+)/i', $input, $m)) {
+            $q = urldecode($m[1]);
+            return 'https://www.google.com/maps?q=' . urlencode($q) . '&output=embed';
+        }
+        if (preg_match('/^https?:\/\//i', $input)) {
+            if (str_contains($input, 'output=embed')) {
+                return $input;
+            }
+            return 'https://www.google.com/maps?q=' . urlencode($input) . '&output=embed';
+        }
+        return 'https://www.google.com/maps?q=' . urlencode($input) . '&output=embed';
+    }
+}
+
+if (!function_exists('resolver_mapa_link')) {
+    function resolver_mapa_link($input) {
+        $input = trim((string)$input);
+        if ($input === '') {
+            $input = 'Neiva, Huila, Colombia';
+        }
+        if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/i', $input, $m)) {
+            $url = $m[1];
+            if (preg_match('/[?&]q=([^&]+)/i', $url, $mq)) {
+                return 'https://www.google.com/maps/search/?api=1&query=' . urlencode(urldecode($mq[1]));
+            }
+            return $url;
+        }
+        if (preg_match('/^https?:\/\//i', $input)) {
+            return $input;
+        }
+        return 'https://www.google.com/maps/search/?api=1&query=' . urlencode($input);
     }
 }
 
@@ -1290,7 +1339,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['guardar_conta
     $c4_desc = mb_substr(trim($_POST['cont_c4_desc'] ?? 'Area de servicio'), 0, 100);
 
     // Bloque 3: Mapa Interactivo
-    $mapa_busqueda = mb_substr(trim($_POST['cont_mapa_busqueda'] ?? 'Neiva, Huila, Colombia'), 0, 150);
+    $mapa_busqueda = mb_substr(trim($_POST['cont_mapa_busqueda'] ?? 'Neiva, Huila, Colombia'), 0, 1000);
     $mapa_titulo   = mb_substr(trim($_POST['cont_mapa_titulo'] ?? 'Estamos en Neiva, Huila'), 0, 150);
     $mapa_texto    = mb_substr(trim($_POST['cont_mapa_texto'] ?? ''), 0, 350);
 
@@ -4327,6 +4376,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['guardar_conta
                                 <label for="cont_c4_dato" class="form-label fw-bold small text-dark">Dato de contacto (Ubicación física):</label>
                                 <input type="text" class="form-control" id="cont_c4_dato" name="cont_c4_dato" maxlength="100" value="<?php echo htmlspecialchars($contenido_contacto['c4_dato'] ?? 'Neiva, Huila, Colombia', ENT_QUOTES, 'UTF-8'); ?>">
                                 <div class="form-text small">Máx 100 caracteres. Ej: Neiva, Huila, Colombia</div>
+                                <button type="button" class="btn btn-sm btn-outline-dark fw-semibold mt-2 d-inline-flex align-items-center gap-1" style="font-size: 0.8rem;" onclick="copiarDireccionAMapa();">
+                                  <i class="bi bi-geo-alt-fill text-warning"></i> Sincronizar con el Mapa Interactivo
+                                </button>
                               </div>
                               <div>
                                 <label for="cont_c4_desc" class="form-label fw-bold small text-dark">Texto descriptivo:</label>
@@ -4348,20 +4400,52 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['guardar_conta
                     <h2 class="accordion-header" id="headingContMapa">
                       <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContMapa" aria-expanded="false" aria-controls="collapseContMapa">
                         <i class="bi bi-geo-alt-fill text-warning me-2 fs-5"></i>
-                        <span>Bloque 3: Mapa Interactivo</span>
+                        <span>Bloque 3: Mapa Interactivo (Dirección, Coordenadas o Código de Google Maps)</span>
                       </button>
                     </h2>
                     <div id="collapseContMapa" class="accordion-collapse collapse" aria-labelledby="headingContMapa" data-bs-parent="#accordionEditorContacto">
                       <div class="accordion-body p-4 bg-white">
                         
                         <div class="row g-3">
-                          <!-- Dirección de Búsqueda -->
+                          <!-- Dirección de Búsqueda / Enlace de Google Maps -->
                           <div class="col-12">
-                            <label for="cont_mapa_busqueda" class="form-label fw-bold small text-dark">
-                              <i class="bi bi-search text-warning me-1"></i>Dirección de búsqueda para el mapa:
+                            <label for="cont_mapa_busqueda" class="form-label fw-bold small text-dark d-flex justify-content-between align-items-center flex-wrap gap-2">
+                              <span><i class="bi bi-search text-warning me-1"></i>Ubicación o enlace de Google Maps:</span>
+                              <span class="badge bg-success-subtle text-success border border-success-subtle small px-2 py-1" id="mapPreviewStatus">
+                                <i class="bi bi-check-circle me-1"></i>Vista Previa en Vivo
+                              </span>
                             </label>
-                            <input type="text" class="form-control" id="cont_mapa_busqueda" name="cont_mapa_busqueda" maxlength="150" value="<?php echo htmlspecialchars($contenido_contacto['mapa_busqueda'] ?? 'Neiva, Huila, Colombia', ENT_QUOTES, 'UTF-8'); ?>" placeholder="Neiva, Huila, Colombia">
-                            <div class="form-text small">Máx 150 caracteres. Este campo se usará para actualizar el iframe de Google Maps y el botón de redirección automáticamente.</div>
+                            <div class="input-group">
+                              <span class="input-group-text bg-light text-muted"><i class="bi bi-geo-alt"></i></span>
+                              <input type="text" class="form-control" id="cont_mapa_busqueda" name="cont_mapa_busqueda" maxlength="1000" value="<?php echo htmlspecialchars($contenido_contacto['mapa_busqueda'] ?? 'Neiva, Huila, Colombia', ENT_QUOTES, 'UTF-8'); ?>" placeholder="Ej: Neiva, Huila, Colombia ó Cra 5 # 10-25 Neiva ó pega enlace/iframe...">
+                              <button type="button" class="btn btn-outline-secondary" onclick="actualizarMapaEnVivo(document.getElementById('cont_mapa_busqueda').value);" title="Recargar vista previa">
+                                <i class="bi bi-arrow-clockwise"></i> Probar
+                              </button>
+                            </div>
+                            <div class="form-text small">
+                              Ingresa cualquier dirección (ej. <em>Neiva, Huila, Colombia</em>), coordenadas o pega un código <code>&lt;iframe&gt;</code> / enlace directo de Google Maps. El mapa se actualiza automáticamente.
+                            </div>
+
+                            <!-- Botones de sugerencias rápidas -->
+                            <div class="d-flex align-items-center gap-2 mt-2 flex-wrap">
+                              <small class="text-muted fw-bold">Ubicaciones rápidas:</small>
+                              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2" style="font-size: 0.78rem;" onclick="cambiarUbicacionRapida('Neiva, Huila, Colombia')">Neiva (Centro)</button>
+                              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2" style="font-size: 0.78rem;" onclick="cambiarUbicacionRapida('Zona Industrial, Neiva, Huila')">Zona Industrial Neiva</button>
+                              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2" style="font-size: 0.78rem;" onclick="cambiarUbicacionRapida('Bogotá, Colombia')">Bogotá</button>
+                              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2" style="font-size: 0.78rem;" onclick="cambiarUbicacionRapida('Pitalito, Huila, Colombia')">Pitalito</button>
+                            </div>
+
+                            <!-- Vista Previa del Mapa en Vivo en el Modal -->
+                            <div class="mt-3">
+                              <div class="rounded-3 border overflow-hidden shadow-sm" style="height: 260px; background: #e9ecef; position: relative;">
+                                <iframe id="previewIframeMapa" 
+                                        src="<?php echo htmlspecialchars(resolver_mapa_embed($contenido_contacto['mapa_busqueda'] ?? 'Neiva, Huila, Colombia')); ?>" 
+                                        style="width: 100%; height: 100%; border: 0;" 
+                                        loading="lazy" 
+                                        referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                              </div>
+                            </div>
                           </div>
 
                           <!-- Título del Cuadro Informativo -->
@@ -4704,6 +4788,69 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['guardar_conta
           if (item) {
             item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }
+        });
+      }
+
+      // Sincronización y Vista Previa en Vivo de Google Maps
+      const inputMapa = document.getElementById('cont_mapa_busqueda');
+      const previewMapa = document.getElementById('previewIframeMapa');
+      const statusMapa = document.getElementById('mapPreviewStatus');
+
+      window.actualizarMapaEnVivo = function (val) {
+        if (!previewMapa) return;
+        val = (val || '').trim();
+        if (!val) val = 'Neiva, Huila, Colombia';
+
+        // 1. Si el usuario pegó el código iframe completo
+        const matchIframe = val.match(/<iframe\b[^>]*\bsrc=["']([^"']+)["']/i);
+        let src = '';
+        if (matchIframe && matchIframe[1]) {
+          src = matchIframe[1];
+        } else if (/^https?:\/\/(?:www\.)?google\.[a-z.]+\/maps\/embed/i.test(val)) {
+          src = val;
+        } else if (/^https?:\/\/(?:www\.)?google\.[a-z.]+\/maps\/?\?[^"]*q=([^&]+)/i.test(val)) {
+          const matchQ = val.match(/[?&]q=([^&]+)/i);
+          src = 'https://www.google.com/maps?q=' + (matchQ ? matchQ[1] : encodeURIComponent(val)) + '&output=embed';
+        } else {
+          src = 'https://www.google.com/maps?q=' + encodeURIComponent(val) + '&output=embed';
+        }
+
+        previewMapa.src = src;
+        if (statusMapa) {
+          statusMapa.innerHTML = '<i class="bi bi-check2-all me-1"></i>Mapa Actualizado';
+          statusMapa.className = 'badge bg-success text-white small px-2 py-1';
+        }
+      };
+
+      window.cambiarUbicacionRapida = function (direccion) {
+        if (inputMapa) {
+          inputMapa.value = direccion;
+          window.actualizarMapaEnVivo(direccion);
+        }
+      };
+
+      window.copiarDireccionAMapa = function () {
+        const inputDir = document.getElementById('cont_c4_dato');
+        if (inputDir && inputMapa) {
+          inputMapa.value = inputDir.value;
+          window.actualizarMapaEnVivo(inputDir.value);
+          // Si el acordeón del mapa está cerrado, abrirlo
+          const collapseMapa = document.getElementById('collapseContMapa');
+          if (collapseMapa && !collapseMapa.classList.contains('show')) {
+            bootstrap.Collapse.getOrCreateInstance(collapseMapa).show();
+          }
+          setTimeout(() => {
+            document.getElementById('headingContMapa')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 150);
+        }
+      };
+
+      if (inputMapa) {
+        inputMapa.addEventListener('input', function () {
+          window.actualizarMapaEnVivo(this.value);
+        });
+        inputMapa.addEventListener('change', function () {
+          window.actualizarMapaEnVivo(this.value);
         });
       }
     });

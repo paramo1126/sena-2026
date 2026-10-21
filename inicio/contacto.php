@@ -59,6 +59,53 @@ foreach ($valores_defecto_cont as $k => $v_def) {
         $contenido_contacto[$k] = $v_def;
     }
 }
+
+// Funciones auxiliares avanzadas para Google Maps (soporta direcciones, coordenadas, iframes completos y enlaces directos)
+if (!function_exists('resolver_mapa_embed')) {
+    function resolver_mapa_embed($input) {
+        $input = trim((string)$input);
+        if ($input === '') {
+            $input = 'Neiva, Huila, Colombia';
+        }
+        if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/i', $input, $m)) {
+            return $m[1];
+        }
+        if (preg_match('/^https?:\/\/(?:www\.)?google\.[a-z.]+\/maps\/embed/i', $input)) {
+            return $input;
+        }
+        if (preg_match('/^https?:\/\/(?:www\.)?google\.[a-z.]+\/maps\/?\?[^"]*q=([^&]+)/i', $input, $m)) {
+            $q = urldecode($m[1]);
+            return 'https://www.google.com/maps?q=' . urlencode($q) . '&output=embed';
+        }
+        if (preg_match('/^https?:\/\//i', $input)) {
+            if (str_contains($input, 'output=embed')) {
+                return $input;
+            }
+            return 'https://www.google.com/maps?q=' . urlencode($input) . '&output=embed';
+        }
+        return 'https://www.google.com/maps?q=' . urlencode($input) . '&output=embed';
+    }
+}
+
+if (!function_exists('resolver_mapa_link')) {
+    function resolver_mapa_link($input) {
+        $input = trim((string)$input);
+        if ($input === '') {
+            $input = 'Neiva, Huila, Colombia';
+        }
+        if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/i', $input, $m)) {
+            $url = $m[1];
+            if (preg_match('/[?&]q=([^&]+)/i', $url, $mq)) {
+                return 'https://www.google.com/maps/search/?api=1&query=' . urlencode(urldecode($mq[1]));
+            }
+            return $url;
+        }
+        if (preg_match('/^https?:\/\//i', $input)) {
+            return $input;
+        }
+        return 'https://www.google.com/maps/search/?api=1&query=' . urlencode($input);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -199,7 +246,10 @@ foreach ($valores_defecto_cont as $k => $v_def) {
               <div class="contact-info-icon"><i class="bi bi-geo-alt-fill"></i></div>
               <h2 class="h5 fw-bold text-navy text-break">Ubicación</h2>
               <p class="text-gray mb-2 text-break"><?php echo htmlspecialchars($contenido_contacto['c4_desc']); ?></p>
-              <span class="fw-semibold text-navy text-break"><?php echo htmlspecialchars($contenido_contacto['c4_dato']); ?></span>
+              <a class="fw-semibold text-navy text-decoration-none text-break d-inline-flex align-items-center gap-1" href="<?php echo htmlspecialchars(resolver_mapa_link($contenido_contacto['mapa_busqueda'] ?: $contenido_contacto['c4_dato'])); ?>" target="_blank" rel="noopener noreferrer" title="Ver en Google Maps">
+                <span><?php echo htmlspecialchars($contenido_contacto['c4_dato']); ?></span>
+                <i class="bi bi-box-arrow-up-right small text-muted"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -212,16 +262,21 @@ foreach ($valores_defecto_cont as $k => $v_def) {
                 title="<?php echo htmlspecialchars($contenido_contacto['mapa_titulo'] ?? 'Ubicación'); ?>"
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps?q=<?php echo urlencode($contenido_contacto['mapa_busqueda']); ?>&output=embed">
+                src="<?php echo htmlspecialchars(resolver_mapa_embed($contenido_contacto['mapa_busqueda'])); ?>">
               </iframe>
               <div class="map-caption">
                 <h2 class="h5 fw-bold text-navy mb-2 text-break"><?php echo htmlspecialchars($contenido_contacto['mapa_titulo']); ?></h2>
                 <p class="text-gray mb-3 text-break">
                   <?php echo nl2br(htmlspecialchars($contenido_contacto['mapa_texto'])); ?>
                 </p>
-                <a class="btn btn-outline-navy text-break" href="https://www.google.com/maps/search/?api=1&query=<?php echo urlencode($contenido_contacto['mapa_busqueda']); ?>" target="_blank" rel="noopener noreferrer">
-                  <i class="bi bi-map-fill me-2"></i>Ver en Google Maps
-                </a>
+                <div class="d-flex flex-wrap gap-2">
+                  <a class="btn btn-outline-navy text-break" href="<?php echo htmlspecialchars(resolver_mapa_link($contenido_contacto['mapa_busqueda'])); ?>" target="_blank" rel="noopener noreferrer">
+                    <i class="bi bi-map-fill me-2"></i>Ver en Google Maps
+                  </a>
+                  <a class="btn btn-warning text-dark fw-semibold text-break" href="https://www.google.com/maps/dir/?api=1&destination=<?php echo urlencode($contenido_contacto['mapa_busqueda']); ?>" target="_blank" rel="noopener noreferrer">
+                    <i class="bi bi-sign-turn-right-fill me-2"></i>Cómo llegar
+                  </a>
+                </div>
               </div>
             </div>
           </div>
