@@ -9,10 +9,15 @@ require_once __DIR__ . '/../config/conexion.php';
 
 // Consulta directa a la tabla contenido_inicio (fila id = 1)
 $contenido = [];
+$btn_proy = [];
 if (isset($conexion) && $conexion instanceof mysqli && !$conexion->connect_error) {
     $res = $conexion->query("SELECT * FROM `contenido_inicio` WHERE `id` = 1 LIMIT 1");
     if ($res && $res->num_rows > 0) {
         $contenido = $res->fetch_assoc();
+    }
+    $res_p = $conexion->query("SELECT `btn1_nombre`, `btn2_nombre`, `btn3_nombre` FROM `contenido_proyectos` WHERE `id` = 1 LIMIT 1");
+    if ($res_p && $res_p->num_rows > 0) {
+        $btn_proy = $res_p->fetch_assoc();
     }
 }
 
@@ -78,9 +83,9 @@ if (!function_exists('resolver_ruta_img')) {
               Proyectos
             </a>
             <ul class="dropdown-menu" aria-labelledby="menuProyectos">
-              <li><a class="dropdown-item" href="../inicio/proyecto.php#calles">Calles pavimentadas</a></li>
-              <li><a class="dropdown-item" href="../inicio/proyecto.php#tuberias">Tuberias</a></li>
-              <li><a class="dropdown-item" href="../inicio/proyecto.php#evidencias">Evidencias</a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#calles"><?php echo htmlspecialchars($btn_proy['btn1_nombre'] ?? 'Calles pavimentadas'); ?></a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#tuberias"><?php echo htmlspecialchars($btn_proy['btn2_nombre'] ?? 'Tuberias'); ?></a></li>
+              <li><a class="dropdown-item" href="../inicio/proyecto.php#evidencias"><?php echo htmlspecialchars($btn_proy['btn3_nombre'] ?? 'Evidencias'); ?></a></li>
             </ul>
           </li>
           <li class="nav-item">
@@ -328,7 +333,16 @@ if (!function_exists('resolver_ruta_img')) {
         <div class="col-lg-4 col-sm-6">
           <h5 class="fw-bold text-white mb-3">Contacto</h5>
           <?php 
-          $contacto_items = array_filter(array_map('trim', explode("\n", (string)($contenido['footer_vinetas'] ?? $contenido['footer_contacto_vinetas'] ?? ''))));
+          $raw_footer = (string)($contenido['footer_vinetas'] ?? '');
+          $contacto_items = array_filter(array_map('trim', explode("\n", $raw_footer)));
+          if (empty($contacto_items)) {
+            $contacto_items = [
+              'Neiva, Huila, Colombia',
+              '+57 310 291 6140',
+              'contacto@constructoresmym.com',
+              'Lunes a viernes: 8:00 a.m. - 5:00 p.m.'
+            ];
+          }
           $iconos_contacto = [
             'bi bi-geo-alt-fill',
             'bi bi-telephone-fill',

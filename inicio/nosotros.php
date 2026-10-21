@@ -1,3 +1,92 @@
+<?php
+/**
+ * Constructores M&M - Nosotros
+ * Conexión centralizada y consulta a contenido_inicio para footer dinámico
+ * Consulta y renderizado dinámico de la tabla contenido_nosotros
+ */
+require_once __DIR__ . '/../config/conexion.php';
+
+// 1. Footer Universal (Código DRY) desde contenido_inicio
+$contenido = [];
+if (isset($conexion) && $conexion instanceof mysqli && !$conexion->connect_error) {
+    try {
+        $res = $conexion->query("SELECT * FROM `contenido_inicio` WHERE `id` = 1 LIMIT 1");
+        if ($res && $res->num_rows > 0) {
+            $contenido = $res->fetch_assoc();
+        }
+    } catch (\Throwable $e_ini) {
+        $contenido = [];
+    }
+}
+
+// 2. Consulta de Contenido Dinámico de la Sección NOSOTROS
+$contenido_nosotros = [];
+$valores_defecto_nos = [
+    'carrusel_img1' => 'imagen 22.png',
+    'carrusel_img2' => 'imagen 44.png',
+    'carrusel_img3' => 'imagen 33.png',
+    'qs_imagen' => 'imagen4.png',
+    'qs_titulo' => '¿Quiénes somos?',
+    'qs_texto' => 'Constructores M&M es una empresa líder especializada en construcción civil y soluciones integrales de infraestructura para redes de gas natural. Contamos con un equipo multidisciplinario de ingenieros, arquitectos y técnicos altamente certificados que desarrollan proyectos ejecutando estándares rigurosos desde el diseño preliminar hasta la entrega final.',
+    'qs_vinetas' => "+15 años de experiencia\nCumplimiento normativo\nPersonal certificado\nProyectos a tiempo",
+    'mision_titulo' => 'Misión',
+    'mision_texto' => 'Proveer soluciones integrales e innovadoras en construcción civil e infraestructura de redes de gas, garantizando altos estándares de calidad, seguridad industrial y cumplimiento normativo. Buscamos impactar positivamente en las comunidades a través de obras sostenibles, eficientes y confiables.',
+    'vision_titulo' => 'Visión',
+    'vision_texto' => 'Ser reconocidos para el 2030 como la empresa referente a nivel regional y nacional en el desarrollo de proyectos de ingeniería civil y redes de infraestructura energética, destacándonos por la excelencia operativa, el desarrollo de nuestro talento humano y el compromiso medioambiental.',
+    'valores_titulo' => 'Nuestros Valores',
+    'valores_subtitulo' => 'Los principios que guían la ejecución de cada uno de nuestros proyectos.',
+    'v1_titulo' => 'Seguridad',
+    'v1_texto' => 'Protegemos la vida de nuestros colaboradores y de la comunidad en cada obra.',
+    'v2_titulo' => 'Calidad',
+    'v2_texto' => 'Uso de materiales certificados y procesos con estándares técnicos rigurosos.',
+    'v3_titulo' => 'Cumplimiento',
+    'v3_texto' => 'Entregamos los proyectos respetando cronogramas y presupuestos pactados.',
+    'v4_titulo' => 'Sostenibilidad',
+    'v4_texto' => 'Respeto por el medio ambiente y mitigación del impacto ambiental.',
+    'm1_valor' => '+150',
+    'm1_texto' => 'Proyectos Ejecutados',
+    'm2_valor' => '+50 Km',
+    'm2_texto' => 'Redes de Gas Instaladas',
+    'm3_valor' => '100%',
+    'm3_texto' => 'Certificación Normativa',
+    'm4_valor' => '+15',
+    'm4_texto' => 'Años de Trayectoria'
+];
+
+if (isset($conexion) && $conexion instanceof mysqli && !$conexion->connect_error) {
+    try {
+        $res_nos = $conexion->query("SELECT * FROM `contenido_nosotros` WHERE `id` = 1 LIMIT 1");
+        if ($res_nos && $res_nos->num_rows > 0) {
+            $contenido_nosotros = $res_nos->fetch_assoc();
+        }
+    } catch (\Throwable $e_nos) {
+        $contenido_nosotros = [];
+    }
+}
+
+if (!is_array($contenido_nosotros)) {
+    $contenido_nosotros = [];
+}
+foreach ($valores_defecto_nos as $k => $v_def) {
+    if (!isset($contenido_nosotros[$k]) || trim((string)$contenido_nosotros[$k]) === '') {
+        $contenido_nosotros[$k] = $v_def;
+    }
+}
+
+// Función auxiliar para resolver la ruta de imágenes (archivos locales o enlaces URL directos)
+if (!function_exists('resolver_ruta_img')) {
+    function resolver_ruta_img($ruta, $base_dir = '../imagenes/') {
+        $ruta = trim((string)$ruta);
+        if ($ruta === '') {
+            return $base_dir . 'imagen1.png';
+        }
+        if (preg_match('/^https?:\/\//i', $ruta) || str_starts_with($ruta, '/') || str_starts_with($ruta, '../')) {
+            return $ruta;
+        }
+        return rtrim($base_dir, '/') . '/' . ltrim($ruta, '/');
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -65,169 +154,159 @@
       </div>
     </div>
   </nav>
-     <!-- Carrusel -->
-
-  <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-ride="carousel" data-bs-touch="true" data-bs-interval="3500" data-bs-pause="false">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="../imagenes/imagen1.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 1">
+  <!-- Carrusel Hero -->
+  <div id="carouselExampleControlsNoTouching" class="carousel slide carousel-hero" data-bs-ride="carousel" data-bs-touch="true" data-bs-interval="3500" data-bs-pause="false">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="<?php echo htmlspecialchars(resolver_ruta_img($contenido_nosotros['carrusel_img1'] ?? 'imagen 22.png')); ?>" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 1">
+      </div>
+      <div class="carousel-item">
+        <img src="<?php echo htmlspecialchars(resolver_ruta_img($contenido_nosotros['carrusel_img2'] ?? 'imagen 44.png')); ?>" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 2">
+      </div>
+      <div class="carousel-item">
+        <img src="<?php echo htmlspecialchars(resolver_ruta_img($contenido_nosotros['carrusel_img3'] ?? 'imagen 33.png')); ?>" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 3">
+      </div>
     </div>
-    <div class="carousel-item">
-      <img src="../imagenes/imagen2.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 2">
-    </div>
-    <div class="carousel-item">
-      <img src="../imagenes/imagen3.png" class="d-block w-100" alt="Proyecto de construcción realizado por Constructores M&M - imagen 3">
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
 
   <!-- Nosotros -->
   <!-- ======================================================= -->
-<!-- SECCIÓN NOSOTROS COMPLETA Y MEJORADA                    -->
-<!-- ======================================================= -->
-<section id="nosotros" class="py-5">
-  <div class="container py-4">
-    
-    <!-- 1. Quiénes Somos -->
-    <div class="row align-items-center mb-5">
-      <div class="col-lg-6 mb-4 mb-lg-0">
-        <img src="../imagenes/imagen4.png" alt="Equipo de Constructores M&M en obra" class="img-fluid rounded-3 shadow">
-      </div>
-      <div class="col-lg-6">
-        <h2 class="section-title text-start">¿Quiénes somos?</h2>
-        <p class="text-gray mb-4">
-          Constructores M&M es una empresa líder especializada en construcción civil y soluciones integrales de infraestructura para redes de gas natural. Contamos con un equipo multidisciplinario de ingenieros, arquitectos y técnicos altamente certificados que desarrollan proyectos ejecutando estándares rigurosos desde el diseño preliminar hasta la entrega final.
-        </p>
-        <div class="row g-3">
-          <div class="col-6">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
-              <span class="fw-semibold text-navy">+15 años de experiencia</span>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
-              <span class="fw-semibold text-navy">Cumplimiento normativo</span>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
-              <span class="fw-semibold text-navy">Personal certificado</span>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
-              <span class="fw-semibold text-navy">Proyectos a tiempo</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2. Misión y Visión -->
-    <div class="row g-4 my-5">
-      <div class="col-md-6">
-        <div class="card h-100 border-0 shadow-sm p-4 border-start border-4 border-gold bg-light">
-          <div class="d-flex align-items-center mb-3">
-            <div class="service-icon me-3 mb-0" style="width: 50px; height: 50px; font-size: 1.5rem;">
-              <i class="bi bi-compass-fill"></i>
-            </div>
-            <h3 class="h4 fw-bold text-navy mb-0">Misión</h3>
-          </div>
-          <p class="text-gray mb-0">
-            Proveer soluciones integrales e innovadoras en construcción civil e infraestructura de redes de gas, garantizando altos estándares de calidad, seguridad industrial y cumplimiento normativo. Buscamos impactar positivamente en las comunidades a través de obras sostenibles, eficientes y confiables.
-          </p>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card h-100 border-0 shadow-sm p-4 border-start border-4 border-navy bg-light">
-          <div class="d-flex align-items-center mb-3">
-            <div class="service-icon me-3 mb-0" style="width: 50px; height: 50px; font-size: 1.5rem; background-color: rgba(11, 31, 58, 0.1); color: var(--color-navy);">
-              <i class="bi bi-eye-fill"></i>
-            </div>
-            <h3 class="h4 fw-bold text-navy mb-0">Visión</h3>
-          </div>
-          <p class="text-gray mb-0">
-            Ser reconocidos para el 2030 como la empresa referente a nivel regional y nacional en el desarrollo de proyectos de ingeniería civil y redes de infraestructura energética, destacándonos por la excelencia operativa, el desarrollo de nuestro talento humano y el compromiso medioambiental.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. Valores Corporativos -->
-    <div class="my-5 text-center">
-      <h2 class="section-title">Nuestros Valores</h2>
-      <p class="text-gray mb-4">Los principios que guían la ejecución de cada uno de nuestros proyectos.</p>
+  <!-- SECCIÓN NOSOTROS COMPLETA Y MEJORADA                    -->
+  <!-- ======================================================= -->
+  <section id="nosotros" class="py-5">
+    <div class="container py-4">
       
-      <div class="row g-4 mt-2">
-        <div class="col-6 col-md-3">
-          <div class="why-card card h-100 border-0 shadow-sm">
-            <i class="bi bi-shield-check why-icon"></i>
-            <h5 class="fw-bold text-navy">Seguridad</h5>
-            <p class="small text-gray mb-0">Protegemos la vida de nuestros colaboradores y de la comunidad en cada obra.</p>
-          </div>
+      <!-- 1. Quiénes Somos -->
+      <div class="row align-items-center mb-5">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <img src="<?php echo htmlspecialchars(resolver_ruta_img($contenido_nosotros['qs_imagen'] ?? 'imagen4.png')); ?>" alt="Equipo de Constructores M&M en obra" class="img-fluid rounded-3 shadow">
         </div>
-        <div class="col-6 col-md-3">
-          <div class="why-card card h-100 border-0 shadow-sm">
-            <i class="bi bi-award-fill why-icon"></i>
-            <h5 class="fw-bold text-navy">Calidad</h5>
-            <p class="small text-gray mb-0">Uso de materiales certificados y procesos con estándares técnicos rigurosos.</p>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="why-card card h-100 border-0 shadow-sm">
-            <i class="bi bi-clock-history why-icon"></i>
-            <h5 class="fw-bold text-navy">Cumplimiento</h5>
-            <p class="small text-gray mb-0">Entregamos los proyectos respetando cronogramas y presupuestos pactados.</p>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="why-card card h-100 border-0 shadow-sm">
-            <i class="bi bi-tree-fill why-icon"></i>
-            <h5 class="fw-bold text-navy">Sostenibilidad</h5>
-            <p class="small text-gray mb-0">Respeto por el medio ambiente y mitigación del impacto ambiental.</p>
+        <div class="col-lg-6">
+          <h2 class="section-title text-start"><?php echo htmlspecialchars($contenido_nosotros['qs_titulo'] ?? '¿Quiénes somos?'); ?></h2>
+          <p class="text-gray mb-4">
+            <?php echo nl2br(htmlspecialchars($contenido_nosotros['qs_texto'] ?? '')); ?>
+          </p>
+          <div class="row g-3">
+            <?php 
+            $qs_items = array_filter(array_map('trim', explode("\n", (string)($contenido_nosotros['qs_vinetas'] ?? ''))));
+            if (empty($qs_items)) {
+              $qs_items = ['+15 años de experiencia', 'Cumplimiento normativo', 'Personal certificado', 'Proyectos a tiempo'];
+            }
+            foreach ($qs_items as $qs_item):
+              $qs_txt = ltrim($qs_item, "-•* \t\n\r\0\x0B");
+              if ($qs_txt === '') continue;
+            ?>
+              <div class="col-6">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-check-circle-fill text-gold fs-4 me-2"></i>
+                  <span class="fw-semibold text-navy"><?php echo htmlspecialchars($qs_txt); ?></span>
+                </div>
+              </div>
+            <?php endforeach; ?>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 4. Banner de Logros / Métricas -->
-    <div class="bg-navy rounded-3 text-white p-4 p-md-5 mt-5 shadow">
-      <div class="row text-center g-4">
-        <div class="col-6 col-md-3">
-          <div class="display-6 fw-bold text-gold">+150</div>
-          <div class="small text-uppercase">Proyectos Ejecutados</div>
+      <!-- 2. Misión y Visión -->
+      <div class="row g-4 my-5">
+        <div class="col-md-6">
+          <div class="card h-100 border-0 shadow-sm p-4 border-start border-4 border-gold bg-light">
+            <div class="d-flex align-items-center mb-3">
+              <div class="service-icon me-3 mb-0" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="bi bi-compass-fill"></i>
+              </div>
+              <h3 class="h4 fw-bold text-navy mb-0"><?php echo htmlspecialchars($contenido_nosotros['mision_titulo'] ?? 'Misión'); ?></h3>
+            </div>
+            <p class="text-gray mb-0">
+              <?php echo nl2br(htmlspecialchars($contenido_nosotros['mision_texto'] ?? '')); ?>
+            </p>
+          </div>
         </div>
-        <div class="col-6 col-md-3">
-          <div class="display-6 fw-bold text-gold">+50 Km</div>
-          <div class="small text-uppercase">Redes de Gas Instaladas</div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="display-6 fw-bold text-gold">100%</div>
-          <div class="small text-uppercase">Certificación Normativa</div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="display-6 fw-bold text-gold">+15</div>
-          <div class="small text-uppercase">Años de Trayectoria</div>
+        <div class="col-md-6">
+          <div class="card h-100 border-0 shadow-sm p-4 border-start border-4 border-navy bg-light">
+            <div class="d-flex align-items-center mb-3">
+              <div class="service-icon me-3 mb-0" style="width: 50px; height: 50px; font-size: 1.5rem; background-color: rgba(11, 31, 58, 0.1); color: var(--color-navy);">
+                <i class="bi bi-eye-fill"></i>
+              </div>
+              <h3 class="h4 fw-bold text-navy mb-0"><?php echo htmlspecialchars($contenido_nosotros['vision_titulo'] ?? 'Visión'); ?></h3>
+            </div>
+            <p class="text-gray mb-0">
+              <?php echo nl2br(htmlspecialchars($contenido_nosotros['vision_texto'] ?? '')); ?>
+            </p>
+          </div>
         </div>
       </div>
+
+      <!-- 3. Valores Corporativos -->
+      <div class="my-5 text-center">
+        <h2 class="section-title"><?php echo htmlspecialchars($contenido_nosotros['valores_titulo'] ?? 'Nuestros Valores'); ?></h2>
+        <p class="text-gray mb-4"><?php echo nl2br(htmlspecialchars($contenido_nosotros['valores_subtitulo'] ?? '')); ?></p>
+        
+        <div class="row g-4 mt-2">
+          <div class="col-6 col-md-3">
+            <div class="why-card card h-100 border-0 shadow-sm">
+              <i class="bi bi-shield-check why-icon"></i>
+              <h5 class="fw-bold text-navy"><?php echo htmlspecialchars($contenido_nosotros['v1_titulo'] ?? 'Seguridad'); ?></h5>
+              <p class="small text-gray mb-0"><?php echo htmlspecialchars($contenido_nosotros['v1_texto'] ?? ''); ?></p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="why-card card h-100 border-0 shadow-sm">
+              <i class="bi bi-award-fill why-icon"></i>
+              <h5 class="fw-bold text-navy"><?php echo htmlspecialchars($contenido_nosotros['v2_titulo'] ?? 'Calidad'); ?></h5>
+              <p class="small text-gray mb-0"><?php echo htmlspecialchars($contenido_nosotros['v2_texto'] ?? ''); ?></p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="why-card card h-100 border-0 shadow-sm">
+              <i class="bi bi-clock-history why-icon"></i>
+              <h5 class="fw-bold text-navy"><?php echo htmlspecialchars($contenido_nosotros['v3_titulo'] ?? 'Cumplimiento'); ?></h5>
+              <p class="small text-gray mb-0"><?php echo htmlspecialchars($contenido_nosotros['v3_texto'] ?? ''); ?></p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="why-card card h-100 border-0 shadow-sm">
+              <i class="bi bi-tree-fill why-icon"></i>
+              <h5 class="fw-bold text-navy"><?php echo htmlspecialchars($contenido_nosotros['v4_titulo'] ?? 'Sostenibilidad'); ?></h5>
+              <p class="small text-gray mb-0"><?php echo htmlspecialchars($contenido_nosotros['v4_texto'] ?? ''); ?></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Banner de Logros / Métricas -->
+      <div class="bg-navy rounded-3 text-white p-4 p-md-5 mt-5 shadow">
+        <div class="row text-center g-4">
+          <div class="col-6 col-md-3">
+            <div class="display-6 fw-bold text-gold"><?php echo htmlspecialchars($contenido_nosotros['m1_valor'] ?? '+150'); ?></div>
+            <div class="small text-uppercase"><?php echo htmlspecialchars($contenido_nosotros['m1_texto'] ?? 'Proyectos Ejecutados'); ?></div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="display-6 fw-bold text-gold"><?php echo htmlspecialchars($contenido_nosotros['m2_valor'] ?? '+50 Km'); ?></div>
+            <div class="small text-uppercase"><?php echo htmlspecialchars($contenido_nosotros['m2_texto'] ?? 'Redes de Gas Instaladas'); ?></div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="display-6 fw-bold text-gold"><?php echo htmlspecialchars($contenido_nosotros['m3_valor'] ?? '100%'); ?></div>
+            <div class="small text-uppercase"><?php echo htmlspecialchars($contenido_nosotros['m3_texto'] ?? 'Certificación Normativa'); ?></div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="display-6 fw-bold text-gold"><?php echo htmlspecialchars($contenido_nosotros['m4_valor'] ?? '+15'); ?></div>
+            <div class="small text-uppercase"><?php echo htmlspecialchars($contenido_nosotros['m4_texto'] ?? 'Años de Trayectoria'); ?></div>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </section>
 
-  </div>
-</section>
-
-</div>
   <!-- Footer -->
   <footer id="contacto" class="bg-navy-light pt-5 pb-4">
     <div class="container">
@@ -257,22 +336,35 @@
         </div>
         <div class="col-lg-4 col-sm-6">
           <h5 class="fw-bold text-white mb-3">Contacto</h5>
-          <div class="footer-contact-item">
-            <i class="bi bi-geo-alt-fill"></i>
-            <span>Neiva, Huila, Colombia</span>
-          </div>
-          <div class="footer-contact-item">
-            <i class="bi bi-telephone-fill"></i>
-            <span>+57 310 291 6140</span>
-          </div>
-          <div class="footer-contact-item">
-            <i class="bi bi-envelope-fill"></i>
-            <span>contacto@constructoresmym.com</span>
-          </div>
-          <div class="footer-contact-item">
-            <i class="bi bi-clock-fill"></i>
-            <span>Lunes a viernes: 8:00 a.m. - 5:00 p.m.</span>
-          </div>
+          <?php 
+          $raw_footer = (string)($contenido['footer_vinetas'] ?? $contenido['footer_contacto_vinetas'] ?? '');
+          $contacto_items = array_filter(array_map('trim', explode("\n", $raw_footer)));
+          if (empty($contacto_items)) {
+            $contacto_items = [
+              'Neiva, Huila, Colombia',
+              '+57 310 291 6140',
+              'contacto@constructoresmym.com',
+              'Lunes a viernes: 8:00 a.m. - 5:00 p.m.'
+            ];
+          }
+          $iconos_contacto = [
+            'bi bi-geo-alt-fill',
+            'bi bi-telephone-fill',
+            'bi bi-envelope-fill',
+            'bi bi-clock-fill'
+          ];
+          $idx_c = 0;
+          foreach ($contacto_items as $c_item):
+            $c_limpia = ltrim($c_item, "-•* \t\n\r\0\x0B");
+            if ($c_limpia === '') continue;
+            $icono_c = $iconos_contacto[$idx_c] ?? 'bi bi-info-circle-fill';
+            $idx_c++;
+          ?>
+            <div class="footer-contact-item">
+              <i class="<?php echo $icono_c; ?>"></i>
+              <span><?php echo htmlspecialchars($c_limpia); ?></span>
+            </div>
+          <?php endforeach; ?>
         </div>
       </div>
       <hr class="border-secondary mt-4">

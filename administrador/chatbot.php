@@ -10,6 +10,29 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Control estricto de acceso para el chatbot:
+// Si se accede directamente a chatbot.php o es petición AJAX y no hay sesión activa, bloquear
+$es_peticion_directa_o_ajax = (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'chatbot.php') ||
+    isset($_GET['ajax_chat_query']) || isset($_POST['ajax_chat_query']) ||
+    (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+
+if ($es_peticion_directa_o_ajax && empty($_SESSION['admin_activo'])) {
+    if (isset($_GET['ajax_chat_query']) || isset($_POST['ajax_chat_query']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'reply' => 'Sesión expirada o no autorizada. Por favor inicia sesión.',
+            'buttons' => [],
+            'reload' => true,
+            'found' => false,
+            'html' => 'Sesión expirada o no autorizada.'
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    } else {
+        header("Location: ../iniciaradmin/login.php");
+        exit();
+    }
+}
+
 // Helper para generar tarjetas ultra-compactas de maquinarias/vehículos
 function renderChatbotVehiculoCard($maq, $movs = []) {
     $badgeEstado = 'badge bg-success';

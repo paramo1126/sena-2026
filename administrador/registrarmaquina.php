@@ -12,6 +12,12 @@
 // ==============================================================================
 session_start();
 
+// Control estricto de autenticación: Si no ha iniciado sesión, redirigir al login
+if (empty($_SESSION['admin_activo'])) {
+    header("Location: ../iniciaradmin/login.php");
+    exit();
+}
+
 // Conexión a la base de datos MySQL
 require_once __DIR__ . '/../config/conexion.php';
 
@@ -25,37 +31,25 @@ if ($conexion_ok) {
 }
 
 // 1. SEGURIDAD Y CONTROL DE SESIÓN DINÁMICO
-$sesion_usuario_actual = $_SESSION['admin_activo'] ?? $_SESSION['usuario'] ?? $_SESSION['admin'] ?? '';
-$admin_nombre = !empty($sesion_usuario_actual) ? $sesion_usuario_actual : 'Administrador';
+$sesion_usuario_actual = $_SESSION['admin_activo'];
+$admin_nombre = $sesion_usuario_actual;
 $admin_email  = 'admin@construccionesmym.com';
 $admin_rol    = $_SESSION['rol'] ?? 'Administrador';
 
 // Consulta preparada a la tabla usuarios (columna usuario) usando la sesión activa
 if ($conexion_ok) {
-    if (!empty($sesion_usuario_actual)) {
-        $stmt_user = $conexion->prepare("SELECT usuario FROM usuarios WHERE usuario = ? LIMIT 1");
-        if ($stmt_user) {
-            $stmt_user->bind_param("s", $sesion_usuario_actual);
-            $stmt_user->execute();
-            $res_user = $stmt_user->get_result();
-            if ($res_user && $row_u = $res_user->fetch_assoc()) {
-                if (!empty($row_u['usuario'])) {
-                    $admin_email  = $row_u['usuario'];
-                    $admin_nombre = $row_u['usuario'];
-                }
-            }
-            $stmt_user->close();
-        }
-    } else {
-        // En caso de ingreso directo o prueba, consultar el usuario administrador activo en la BD
-        $res_u = @$conexion->query("SELECT usuario FROM usuarios LIMIT 1");
-        if ($res_u && $row_u = $res_u->fetch_assoc()) {
+    $stmt_user = $conexion->prepare("SELECT usuario FROM usuarios WHERE usuario = ? LIMIT 1");
+    if ($stmt_user) {
+        $stmt_user->bind_param("s", $sesion_usuario_actual);
+        $stmt_user->execute();
+        $res_user = $stmt_user->get_result();
+        if ($res_user && $row_u = $res_user->fetch_assoc()) {
             if (!empty($row_u['usuario'])) {
                 $admin_email  = $row_u['usuario'];
                 $admin_nombre = $row_u['usuario'];
-                $_SESSION['admin_activo'] = $row_u['usuario'];
             }
         }
+        $stmt_user->close();
     }
 }
 
